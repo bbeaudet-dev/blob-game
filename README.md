@@ -2,7 +2,7 @@
 
 <div align="center">
 
-| [🎮 **PLAY HERE**]() |
+| [🎮 **PLAY HERE**](https://sublobination.netlify.app/) |
 | :--------------------------------------------------------: |
 
 </div>
