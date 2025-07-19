@@ -2,14 +2,14 @@
 
 <div align="center">
 
-| [🎮 **PLAY HERE**](https://blob-game-fractal.netlify.app/) |
+| [🎮 **PLAY HERE**]() |
 | :--------------------------------------------------------: |
 
 </div>
 
 ## Project Information
 
-This is a React Typescript project using Vite hosted on Netlify. We want wanted to juice the clicking and make number go up.
+This is a React Typescript project using Vite hosted on Netlify. W
 
 ## Inspiration
 
