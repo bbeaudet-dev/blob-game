@@ -71,6 +71,16 @@ export const ParticleSpawner: React.FC<ParticleSpawnerProps> = ({
     });
   }, [currentLevel.id]);
 
+  // Handle combo tracker updates in a separate effect to avoid setState during render
+  useEffect(() => {
+    const handleParticleAbsorbed = () => {
+      updateComboTracker();
+    };
+
+    window.addEventListener('particle-absorbed', handleParticleAbsorbed);
+    return () => window.removeEventListener('particle-absorbed', handleParticleAbsorbed);
+  }, []);
+
   // Update combo tracker
   const updateComboTracker = () => {
     const now = Date.now();
@@ -351,9 +361,6 @@ export const ParticleSpawner: React.FC<ParticleSpawnerProps> = ({
 
               // PARTICLE ABSORPTION
               if (distanceToBlob <= collisionZone) {
-                // Update combo tracker
-                updateComboTracker();
-
                 // Calculate burst position at blob edge with smart scaling
                 const directionX =
                   (particle.x - blobPosition.x) / distanceToBlob;
@@ -389,6 +396,9 @@ export const ParticleSpawner: React.FC<ParticleSpawnerProps> = ({
                     },
                   })
                 );
+
+                // Mark that we need to update combo tracker
+                // We'll handle this in a separate effect to avoid setState during render
 
                 return null; // Remove particle
               }

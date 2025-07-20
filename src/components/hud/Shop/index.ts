@@ -3,4 +3,5 @@ export { ShopGenerators } from './ShopGenerators';
 export { ShopUpgrades } from './ShopUpgrades';
 export { FilterToggle } from './FilterToggle';
 export { BuyMultiplierToggle } from './BuyMultiplierToggle';
+export { SortToggle } from './SortToggle';
 export { ValueScale } from './ValueScale'; 

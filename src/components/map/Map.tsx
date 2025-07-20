@@ -1,13 +1,15 @@
-import { useMapSelector } from "../../game/systems/mapState";
 import { calculateBlobPosition } from "../../game/systems/calculations";
+import { getCurrentLevel } from "../../game/systems/actions";
+import type { GameState } from "../../game/types";
 
 interface MapProps {
   className?: string;
   zoom?: number;
+  gameState: GameState;
 }
 
-export default function Map({ className, zoom = 1 }: MapProps) {
-  const currentLevel = useMapSelector((s) => s.currentLevel);
+export default function Map({ className, zoom = 1, gameState }: MapProps) {
+  const currentLevel = getCurrentLevel(gameState);
   const blobPosition = calculateBlobPosition();
 
   // Calculate the transform origin as a percentage of the screen

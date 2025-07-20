@@ -4,30 +4,31 @@ import type { CellStatus, Cell, MapState } from '../types';
 import { getNextLevel, LEVELS } from '../content/levels'
 
 export const useMap = create<MapState>()(
-    immer(set => {
-        // Flat array initialised to 'empty'
-        const size = 128
+    immer((set) => {
+        // Initialize fresh map (no persistence needed since we use game state for level)
+        const size = 128;
         const cells: Cell[] = Array.from({ length: size ** 2 }, (_, i) => ({
             x: i % size,
             y: ~~(i / size),
             status: 'empty' as CellStatus,
-        }))
+        }));
+        
         // sprinkle nutrients
         for (let i = 0; i < 300; i++)
-            cells[Math.floor(Math.random() * cells.length)].status = 'nutrient'
+            cells[Math.floor(Math.random() * cells.length)].status = 'nutrient';
 
         return {
-            currentLevel: LEVELS[0], // Start at intro level
+            currentLevel: LEVELS[0], // This will be overridden by game state
             size,
             cells,
             get: (x, y) => cells[y * size + x].status,
             set: (x, y, status) =>
                 set(s => {
-                    s.cells[y * size + x].status = status
+                    s.cells[y * size + x].status = status;
                 }),
             setLevel: (level) =>
                 set(s => {
-                    s.currentLevel = level
+                    s.currentLevel = level;
                 }),
             evolveToNextLevel: (biomass) =>
                 set(s => {

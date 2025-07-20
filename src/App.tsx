@@ -2,6 +2,7 @@ import "./globals.css";
 import { GameScene } from "./components/GameScene";
 import { GameHUD } from "./components/hud/GameHUD";
 import { IntroScreen } from "./components/IntroScreen";
+import { GameCompletion } from "./components/GameCompletion";
 import { useGame } from "./hooks/useGame";
 import { useCameraZoom } from "./hooks/useCameraZoom";
 import { useBlobSize } from "./hooks/useBlobSize";
@@ -9,7 +10,7 @@ import { getCurrentLevel } from "./game/systems/actions";
 import { useIntroStore } from "./store/introStore";
 import { calculateBlobPosition } from "./game/systems/calculations";
 import { initSounds } from "./utils/sound"; // Add this import
-import { useEffect } from "react"; // Add this import
+import { useEffect, useState } from "react"; // Add this import
 
 // Toast imports for GameComponent
 import { ToastContainer } from "react-toastify";
@@ -19,11 +20,19 @@ function App() {
   const showIntro = useIntroStore((state) => state.showIntro);
   const endIntro = useIntroStore((state) => state.endIntro);
   const gameHook = useGame();
+  const [showCompletion, setShowCompletion] = useState(false);
 
   // Initialize sounds when app loads
   useEffect(() => {
     initSounds();
   }, []);
+
+  // Check for game completion
+  useEffect(() => {
+    if (gameHook.gameState.isGameCompleted && !showCompletion) {
+      setShowCompletion(true);
+    }
+  }, [gameHook.gameState.isGameCompleted, showCompletion]);
 
   const handleIntroTransition = () => {
     // Placeholder for any transition logic
@@ -31,6 +40,10 @@ function App() {
 
   const handleIntroComplete = () => {
     endIntro();
+  };
+
+  const handleCompletionComplete = () => {
+    setShowCompletion(false);
   };
 
   return (
@@ -46,6 +59,12 @@ function App() {
           onEvolve={gameHook.handleEvolve}
         />
       )}
+
+      {/* Game Completion Animation */}
+      <GameCompletion
+        isVisible={showCompletion}
+        onComplete={handleCompletionComplete}
+      />
     </div>
   );
 }

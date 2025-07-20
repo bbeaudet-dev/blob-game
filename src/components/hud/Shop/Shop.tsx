@@ -7,6 +7,7 @@ import {
   ShopUpgrades,
   FilterToggle,
   BuyMultiplierToggle,
+  SortToggle,
 } from "./index";
 import { Colors } from "../../../styles/colors";
 
@@ -29,6 +30,7 @@ export const Shop: React.FC<ShopProps> = ({
     "all"
   );
   const [buyMultiplier, setBuyMultiplier] = useState<1 | 10>(1);
+  const [sortOption, setSortOption] = useState<"price" | "value" | "level">("value");
 
   if (!gameState || !onBuyGenerator || !onBuyUpgrade) {
     return null;
@@ -88,6 +90,7 @@ export const Shop: React.FC<ShopProps> = ({
             justifyContent: "space-between",
             alignItems: "center",
             gap: "10px",
+            marginBottom: "10px",
           }}
         >
           <FilterToggle
@@ -97,6 +100,20 @@ export const Shop: React.FC<ShopProps> = ({
           <BuyMultiplierToggle
             multiplier={buyMultiplier}
             onMultiplierChange={setBuyMultiplier}
+          />
+        </div>
+
+        {/* Sort Row */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <SortToggle
+            sortOption={sortOption}
+            onSortChange={setSortOption}
           />
         </div>
       </div>
@@ -116,6 +133,7 @@ export const Shop: React.FC<ShopProps> = ({
           tutorialState={tutorialState}
           onBuyGenerator={handleBuyGenerator}
           generatorFilter={generatorFilter}
+          sortOption={sortOption}
           currentLevel={currentLevel}
           buyMultiplier={buyMultiplier}
         />
