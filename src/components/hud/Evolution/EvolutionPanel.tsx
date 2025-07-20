@@ -101,6 +101,7 @@ export const EvolutionPanel: React.FC<EvolutionPanelProps> = ({
         hasNextLevel={!!nextLevel}
         onEvolve={onEvolve}
         currentLevelId={currentLevel.id}
+        isGameCompleted={gameState.isGameCompleted}
       />
     </div>
   );

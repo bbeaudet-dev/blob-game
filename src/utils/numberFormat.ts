@@ -76,7 +76,7 @@ function formatNumberByType(
 ): string {
   switch (format) {
     case 'scientific':
-      return value.toExponential(maxDecimals);
+      return formatScientific(value, maxDecimals);
 
     case 'decimal':
       return formatDecimal(value, maxDecimals, numberType);
@@ -88,6 +88,13 @@ function formatNumberByType(
     default:
       return formatStandard(value, numberType);
   }
+}
+
+// Custom scientific notation without plus sign
+function formatScientific(value: number, maxDecimals: number): string {
+  const exponential = value.toExponential(maxDecimals);
+  // Remove the plus sign from positive exponents
+  return exponential.replace('e+', 'e');
 }
 
 // Format decimal numbers with type-specific rules
@@ -109,7 +116,7 @@ function formatDecimal(value: number, maxDecimals: number, numberType: NumberTyp
         return formatLargeNumber(value, 3);
       }
     default:
-      return value.toFixed(Math.min(maxDecimals, 2));
+      return value.toFixed(Math.min(maxDecimals, 3));
   }
 }
 
@@ -200,14 +207,14 @@ const LARGE_NUMBER_NAMES = [
 // Formats large numbers with proper naming (e.g., 1.17 Billion)
 function formatLargeNumber(value: number, maxDecimals: number): string {
   if (value < 1000) {
-    return value.toFixed(Math.min(maxDecimals, 2));
+    return value.toFixed(Math.min(maxDecimals, 3));
   }
 
   const exp = Math.floor(Math.log(value) / Math.log(1000));
   const scaled = value / Math.pow(1000, exp);
   const suffix = LARGE_NUMBER_NAMES[exp] || `10^${exp * 3}`;
 
-  return scaled.toFixed(Math.min(maxDecimals, 2)) + ' ' + suffix;
+  return scaled.toFixed(Math.min(maxDecimals, 3)) + ' ' + suffix;
 }
 
 // Formats numbers in compact notation (e.g., 5.7K, 1.3M, 4.5B)

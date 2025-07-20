@@ -67,7 +67,7 @@ export const LEVELS: Level[] = [
     id: 5,
     name: 'city',
     displayName: '🏙️ City',
-    biomassThreshold: 40000000, 
+    biomassThreshold: 20000000, // Reduced from 40M
     biomassDisplayFormat: 'whole',
     background: 'city-bg',
     foodTypes: [],
@@ -79,7 +79,7 @@ export const LEVELS: Level[] = [
     id: 6,
     name: 'continent',
     displayName: '🗺️ Continent',
-    biomassThreshold: 7500000000, 
+    biomassThreshold: 3000000000, // 3B
     biomassDisplayFormat: 'whole',
     background: 'continent-bg',
     foodTypes: [],
@@ -91,7 +91,7 @@ export const LEVELS: Level[] = [
     id: 7,
     name: 'earth',
     displayName: '🌍 Earth',
-    biomassThreshold: 820000000000, 
+    biomassThreshold: 5000000000000, // Reduced to 5T (much more reasonable)
     biomassDisplayFormat: 'whole',
     background: 'earth-bg',
     foodTypes: [],
@@ -103,11 +103,23 @@ export const LEVELS: Level[] = [
     id: 8,
     name: 'solar-system',
     displayName: '🚀 Solar System',
-    biomassThreshold: 6000000000000,
+    biomassThreshold: 1000000000000000, // Reduced to 1Q
     biomassDisplayFormat: 'scientific',
     background: 'solar-system-bg',
     foodTypes: [],
     description: 'Expand your reach to the solar system.',
+    blobSizeStart: 260,
+    blobSizeEnd: 1200
+  },
+  {
+    id: 9,
+    name: 'galaxy',
+    displayName: '🌌 Galaxy',
+    biomassThreshold: 1000000000000000000, // 1Qi threshold for completion
+    biomassDisplayFormat: 'scientific',
+    background: 'solar-system-bg', // Reuse solar system background for now
+    foodTypes: [],
+    description: 'You have consumed the entire galaxy. The universe is yours.',
     blobSizeStart: 260,
     blobSizeEnd: 1200
   }
@@ -121,11 +133,6 @@ export function getNextLevel(currentLevel: Level): Level | null {
   return LEVELS[currentIndex + 1];
 }
 
-export function canEvolve(): boolean {
-  // This function should be removed or updated to take gameState instead
-  // For now, we'll keep it but it should use evolution-based logic
-  // The UI should use canEvolveToNextLevel(gameState) instead
-  return false; // Disable biomass-based evolution
-}
+
 
 

@@ -9,14 +9,28 @@ import {
   type GameState
 } from '../game/systems/actions';
 import { GAME_CONFIG } from '../game/content/config';
-import { useMap } from '../game/systems/mapState';
 import { createTutorialState, progressTutorial, updateTutorial } from '../game/systems/tutorial';
 import type { TutorialState } from '../game/types/ui';
+import { saveGameState, loadGameState, saveTutorialState, loadTutorialState } from '../utils/persistence';
 
 export const useGame = () => {
-  const [gameState, setGameState] = useState<GameState>(INITIAL_STATE);
+  const [gameState, setGameState] = useState<GameState>(() => {
+    // Try to load saved game state on startup
+    const savedState = loadGameState();
+    if (savedState) {
+      return savedState;
+    }
+    return INITIAL_STATE;
+  });
+
   const [tutorialState, setTutorialState] = useState<TutorialState>(() => {
-    // Force tutorial to be active for testing
+    // Try to load saved tutorial state
+    const savedTutorial = loadTutorialState();
+    if (savedTutorial) {
+      return savedTutorial;
+    }
+    
+    // Default tutorial state
     const initialState = createTutorialState();
     return {
       ...initialState,
@@ -28,7 +42,6 @@ export const useGame = () => {
       },
     };
   });
-  const mapEvolveToNextLevel = useMap(state => state.evolveToNextLevel);
 
   // Game loop
   useEffect(() => {
@@ -43,6 +56,18 @@ export const useGame = () => {
 
     return () => clearInterval(interval);
   }, [gameState]);
+
+
+
+  // Auto-save game state every 10 seconds
+  useEffect(() => {
+    const saveInterval = setInterval(() => {
+      saveGameState(gameState);
+      saveTutorialState(tutorialState);
+    }, 10000); // Save every 10 seconds
+
+    return () => clearInterval(saveInterval);
+  }, [gameState, tutorialState]);
 
   const handleBlobClick = useCallback(() => {
     setGameState(prevState => manualClick(prevState));
@@ -65,12 +90,10 @@ export const useGame = () => {
   const handleEvolve = useCallback(() => {
     setGameState(prevState => {
       const newState = evolveToNextLevel(prevState);
-      // Also evolve the map level
-      mapEvolveToNextLevel(newState.biomass);
       return newState;
     });
     setTutorialState((prevTutorialState: TutorialState) => progressTutorial(prevTutorialState, 'evolve'));
-  }, [mapEvolveToNextLevel, gameState]);
+  }, [gameState]);
 
   const handleTutorialStepComplete = useCallback((stepId: string) => {
     setTutorialState((prevTutorialState: TutorialState) => {

@@ -5,6 +5,7 @@ import { GAME_CONFIG } from "../../game/content/config";
 import { Colors } from "../../styles/colors";
 import { calculateCPM } from "../../game/systems/notifications";
 
+
 interface GameStatsProps {
   biomass: number;
   gameState?: GameState;
@@ -30,12 +31,7 @@ export const GameStats: React.FC<GameStatsProps> = ({ biomass, gameState }) => {
     ? calculateCPM(gameState.notifications.recentClicks)
     : 0;
 
-  // Format time as MM:SS
-  // const formatTime = (seconds: number) => {
-  //   const mins = Math.floor(seconds / 60);
-  //   const secs = seconds % 60;
-  //   return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  // };
+
 
   // Dynamic font size based on biomass length to ensure it fits
   let fontSize = 72;
@@ -65,72 +61,7 @@ export const GameStats: React.FC<GameStatsProps> = ({ biomass, gameState }) => {
         userSelect: "none",
       }}
     >
-      {/* Timer and Click Count Row */}
-      {/* 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-around",
-          alignItems: "center",
-          gap: "15px",
-          marginBottom: "15px",
-        }}
-      >
-        <div style={{ textAlign: "center" }}>
-          <div
-            style={{
-              fontSize: "12px",
-              opacity: 0.7,
-              marginBottom: "3px",
-              fontWeight: "bold",
-            }}
-          >
-            TIME
-          </div>
-          <div
-            style={{
-              fontSize: "16px",
-              fontWeight: "bold",
-              color: Colors.evolution.primary,
-              marginBottom: "5px",
-            }}
-          >
-            {formatTime(gameTime)}
-          </div>
-        </div>
 
-        <div
-          style={{
-            width: "1px",
-            height: "30px",
-            backgroundColor: "rgba(255, 255, 255, 0.2)",
-          }}
-        />
-
-        <div style={{ textAlign: "center" }}>
-          <div
-            style={{
-              fontSize: "12px",
-              opacity: 0.7,
-              marginBottom: "3px",
-              fontWeight: "bold",
-            }}
-          >
-            CLICKS
-          </div>
-          <div
-            style={{
-              fontSize: "16px",
-              fontWeight: "bold",
-              color: Colors.evolution.primary,
-              marginBottom: "5px",
-            }}
-          >
-            {gameState?.notifications.totalClicks || 0}
-          </div>
-        </div>
-      </div>
-      */}
 
       {/* Main Biomass Display */}
       <div style={{ marginBottom: "15px" }}>
@@ -265,6 +196,8 @@ export const GameStats: React.FC<GameStatsProps> = ({ biomass, gameState }) => {
           </div>
         </div>
       )}
+
+
     </div>
   );
 };

@@ -8,6 +8,7 @@ interface EvolutionButtonProps {
   hasNextLevel: boolean;
   onEvolve?: () => void;
   currentLevelId?: number; // Add current level ID to determine button text
+  isGameCompleted?: boolean;
 }
 
 export const EvolutionButton: React.FC<EvolutionButtonProps> = ({
@@ -15,6 +16,7 @@ export const EvolutionButton: React.FC<EvolutionButtonProps> = ({
   hasNextLevel,
   onEvolve,
   currentLevelId = 0,
+  isGameCompleted = false,
 }) => {
   const startIntro = useIntroStore(state => state.startIntro);
 
@@ -36,8 +38,10 @@ export const EvolutionButton: React.FC<EvolutionButtonProps> = ({
             color: Colors.evolution.primary,
           }}
         >
-          🏆 You've reached the maximum evolution level! There are no more
-          universes to conquer.
+          {isGameCompleted 
+            ? "🌌 You have conquered the galaxy! The universe is yours to command."
+            : "🏆 You've reached the maximum evolution level! There are no more universes to conquer."
+          }
         </p>
       </div>
     );

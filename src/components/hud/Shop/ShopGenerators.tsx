@@ -24,6 +24,7 @@ interface GeneratorsProps {
   tutorialState?: TutorialState;
   onBuyGenerator: (generatorId: string) => void;
   generatorFilter: "current" | "all";
+  sortOption: "price" | "value" | "level";
   currentLevel: { name: string };
   buyMultiplier: 1 | 10;
 }
@@ -34,6 +35,7 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
   tutorialState,
   onBuyGenerator,
   generatorFilter,
+  sortOption,
   currentLevel,
   buyMultiplier,
 }) => {
@@ -58,7 +60,7 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
     const id = Math.random().toString(36).substr(2, 9);
     setFloatingNumbers((prev) => [...prev, { id, text, x, y, color }]);
   };
-  // Sort generators by affordability and value
+  // Sort generators based on selected sort option
   const sortedGenerators = useMemo(() => {
     const filteredGenerators = Object.values(gameState.generators).filter(
       (generator) => {
@@ -86,24 +88,44 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
       const canAffordA = biomass >= costA;
       const canAffordB = biomass >= costB;
 
-      // First sort by affordability (affordable generators first)
-      if (canAffordA !== canAffordB) {
-        return canAffordA ? -1 : 1;
+      switch (sortOption) {
+        case "price":
+          // Price sorting: cheapest affordable first, then cheapest unaffordable
+          if (canAffordA !== canAffordB) {
+            return canAffordA ? -1 : 1;
+          }
+          // Within affordable/unaffordable groups, sort by price (cheapest first)
+          return costA - costB;
+
+        case "value":
+          // Value sorting: current algorithm (affordability + value)
+          if (canAffordA !== canAffordB) {
+            return canAffordA ? -1 : 1;
+          }
+          // Then sort by value (better value = higher growth/cost ratio)
+          const valueA = getGeneratorValueInfo(a.id, gameState);
+          const valueB = getGeneratorValueInfo(b.id, gameState);
+          if (valueA && valueB) {
+            return valueB.value - valueA.value; // Higher value = better, so put higher values first
+          }
+          return 0;
+
+        case "level":
+          // Level sorting: keep in order of level unlocked, only change based on affordability
+          if (canAffordA !== canAffordB) {
+            return canAffordA ? -1 : 1;
+          }
+          // Within affordable/unaffordable groups, maintain original order
+          return 0;
+
+        default:
+          return 0;
       }
-
-      // Then sort by value (better value = higher growth/cost ratio)
-      const valueA = getGeneratorValueInfo(a.id, gameState);
-      const valueB = getGeneratorValueInfo(b.id, gameState);
-
-      if (valueA && valueB) {
-        return valueB.value - valueA.value; // Higher value = better, so put higher values first
-      }
-
-      return 0;
     });
   }, [
     gameState.generators,
     generatorFilter,
+    sortOption,
     currentLevel.name,
     biomass,
     buyMultiplier,

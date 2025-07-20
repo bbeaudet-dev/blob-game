@@ -34,6 +34,7 @@ export const ShopUpgrades: React.FC<UpgradesProps> = ({
   const [floatingNumbers, setFloatingNumbers] = useState<ShopFloatingNumber[]>(
     []
   );
+  const [hoveredUpgrade, setHoveredUpgrade] = useState<any>(null);
 
   // Clean up floating numbers after animation
   useEffect(() => {
@@ -79,33 +80,116 @@ export const ShopUpgrades: React.FC<UpgradesProps> = ({
       >
         Upgrades
       </h3>
-      {(() => {
-        const upgrades = Object.values(gameState.upgrades).filter((upgrade) => {
-          // Always show tutorial upgrade during tutorial
-          if (upgrade.id === "tutorial-upgrade") {
-            return tutorialState?.isActive;
-          }
+      
+      {/* Info Bar */}
+      <div
+        style={{
+          backgroundColor: `${Colors.upgrades.primary}20`,
+          border: `2px solid ${Colors.upgrades.primary}`,
+          borderRadius: "8px",
+          padding: "10px",
+          marginBottom: "10px",
+          fontSize: "11px",
+          lineHeight: "1.3",
+          height: "60px",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        {hoveredUpgrade ? (
+          <>
+            <div style={{ flex: 1 }}>
+              <div
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "14px",
+                  marginBottom: "4px",
+                  color: "white",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {hoveredUpgrade.name}
+              </div>
+              {!hoveredUpgrade.purchased && (
+                <div
+                  style={{
+                    color: hoveredUpgrade.canAfford
+                      ? Colors.biomass.primary
+                      : Colors.headlines.medium,
+                    fontWeight: "bold",
+                    fontSize: "13px",
+                  }}
+                >
+                  Cost: {NumberFormatter.biomass(hoveredUpgrade.cost, gameState)}
+                </div>
+              )}
+            </div>
+            <div
+              style={{
+                flex: 1,
+                textAlign: "right",
+                color: Colors.generators.primary,
+                fontWeight: "bold",
+                fontSize: "12px",
+              }}
+            >
+              {hoveredUpgrade.effect}x {hoveredUpgrade.targetLevel} generators
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ flex: 1 }}>
+              <div
+                style={{
+                  opacity: 0.5,
+                  fontStyle: "italic",
+                }}
+              >
+                Hover over an upgrade to see details
+              </div>
+            </div>
+            <div style={{ flex: 1 }}></div>
+          </>
+        )}
+      </div>
+      
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          gap: "6px",
+          marginBottom: "10px",
+        }}
+      >
+        {(() => {
+          const upgrades = Object.values(gameState.upgrades).filter((upgrade) => {
+            // Always show tutorial upgrade during tutorial
+            if (upgrade.id === "tutorial-upgrade") {
+              return tutorialState?.isActive;
+            }
 
-          if (generatorFilter === "current") {
-            // Only show upgrades from current level
-            return upgrade.unlockedAtLevel === currentLevel.name;
-          } else {
-            // Show all unlocked upgrades
-            return isContentAvailable(upgrade.unlockedAtLevel);
-          }
-        });
+            if (generatorFilter === "current") {
+              // Only show upgrades from current level
+              return upgrade.unlockedAtLevel === currentLevel.name;
+            } else {
+              // Show all unlocked upgrades
+              return isContentAvailable(upgrade.unlockedAtLevel);
+            }
+          });
 
-        // Tutorial upgrade is now included in game state, so no need to add it here
+          // Tutorial upgrade is now included in game state, so no need to add it here
 
-        return upgrades;
-      })()
-        .sort((a, b) => {
-          // Sort unpurchased first, then purchased
-          if (a.purchased && !b.purchased) return 1;
-          if (!a.purchased && b.purchased) return -1;
-          return 0;
-        })
-        .map((upgrade) => {
+          return upgrades;
+        })()
+          .sort((a, b) => {
+            // Sort unpurchased first, then purchased
+            if (a.purchased && !b.purchased) return 1;
+            if (!a.purchased && b.purchased) return -1;
+            return 0;
+          })
+          .map((upgrade) => {
           const canAfford =
             (biomass >= upgrade.cost || upgrade.id === "tutorial-upgrade") &&
             !upgrade.purchased;
@@ -141,14 +225,13 @@ export const ShopUpgrades: React.FC<UpgradesProps> = ({
                     : "#666"
                 }`,
                 borderRadius: "8px",
-                padding: "12px",
-                marginBottom: "10px",
+                padding: "6px",
                 cursor:
                   canAfford &&
                   (upgrade.id !== "tutorial-upgrade" || isTutorialEnabled)
                     ? "pointer"
                     : "default",
-                fontSize: "12px",
+                fontSize: "10px",
                 transition: "all 0.2s ease",
                 transform: "scale(1)",
                 boxShadow: upgrade.purchased
@@ -161,6 +244,8 @@ export const ShopUpgrades: React.FC<UpgradesProps> = ({
                   : canAfford
                   ? `0 2px 8px ${Colors.upgrades.primary}40`
                   : "none",
+                position: "relative",
+                minHeight: "50px",
               }}
               onClick={(e) => {
                 if (
@@ -196,7 +281,16 @@ export const ShopUpgrades: React.FC<UpgradesProps> = ({
                 }
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.01)";
+                e.currentTarget.style.transform = "scale(1.02)";
+                const nameElement = e.currentTarget.querySelector('.upgrade-name') as HTMLElement;
+                if (nameElement) {
+                  nameElement.style.opacity = "1";
+                }
+                setHoveredUpgrade({
+                  ...upgrade,
+                  canAfford
+                });
+                
                 if (upgrade.purchased) {
                   e.currentTarget.style.borderColor = Colors.upgrades.light;
                   e.currentTarget.style.boxShadow = `0 4px 12px ${Colors.upgrades.light}60`;
@@ -231,6 +325,12 @@ export const ShopUpgrades: React.FC<UpgradesProps> = ({
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = "scale(1)";
+                const nameElement = e.currentTarget.querySelector('.upgrade-name') as HTMLElement;
+                if (nameElement) {
+                  nameElement.style.opacity = "0.7";
+                }
+                setHoveredUpgrade(null);
+                
                 if (upgrade.purchased) {
                   e.currentTarget.style.borderColor = Colors.upgrades.light;
                   e.currentTarget.style.boxShadow = `0 2px 8px ${Colors.upgrades.light}40`;
@@ -263,20 +363,22 @@ export const ShopUpgrades: React.FC<UpgradesProps> = ({
               <div
                 style={{
                   fontWeight: "bold",
-                  marginBottom: "5px",
-                  fontSize: "15px",
+                  fontSize: "10px",
                   position: "relative",
+                  textAlign: "center",
+                  lineHeight: "1.2",
+                  opacity: 0.7,
                 }}
+                className="upgrade-name"
               >
-                {upgrade.name}
                 {upgrade.purchased && (
                   <span
                     style={{
                       position: "absolute",
-                      top: "-8px",
-                      right: "-8px",
+                      top: "-2px",
+                      right: "-2px",
                       color: Colors.upgrades.light,
-                      fontSize: "24px",
+                      fontSize: "12px",
                       fontWeight: "bold",
                     }}
                   >
@@ -284,35 +386,12 @@ export const ShopUpgrades: React.FC<UpgradesProps> = ({
                   </span>
                 )}
               </div>
-              <div
-                style={{
-                  opacity: 0.8,
-                  marginBottom: "5px",
-                  lineHeight: "1.3",
-                  fontSize: "13px",
-                }}
-              >
-                {upgrade.description}
-              </div>
-              {!upgrade.purchased && (
-                <div
-                  style={{
-                    color: canAfford
-                      ? Colors.biomass.primary
-                      : Colors.headlines.medium,
-                    fontWeight: "bold",
-                    fontSize: "13px",
-                  }}
-                >
-                  Cost:{" "}
-                  <span style={{ fontSize: "15px" }}>
-                    {NumberFormatter.biomass(upgrade.cost, gameState)}
-                  </span>
-                </div>
-              )}
+              
+
             </div>
           );
         })}
+      </div>
 
       {/* Floating Numbers */}
       {floatingNumbers.map((floatingNumber) => (

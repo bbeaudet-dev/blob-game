@@ -193,6 +193,9 @@ export function evolveToNextLevel(state: GameState): GameState {
         return state;
     }
 
+    // Check if this is the final level completion
+    const isFinalLevel = nextLevel.name === 'galaxy';
+    
     // Play evolve sound for all levels except intro (intro sound is handled in UI)
     if (state.currentLevelId > 0) {
         playSound('evolve');
@@ -202,7 +205,8 @@ export function evolveToNextLevel(state: GameState): GameState {
     return {
         ...state,
         currentLevelId: nextLevel.id,
-        highestLevelReached: nextLevel.id
+        highestLevelReached: nextLevel.id,
+        isGameCompleted: isFinalLevel ? true : state.isGameCompleted
         // Biomass carries over, generators and upgrades are preserved
         // Zoom reset is handled by useCameraZoom hook when currentLevelId changes
     };

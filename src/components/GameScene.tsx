@@ -3,12 +3,11 @@ import type { GameSceneProps } from "../game/types";
 import { getCurrentLevel } from "../game/systems/actions";
 import { ParticleSystem } from "./particles/ParticleSystem";
 import { BlobContainer } from "./blob/BlobContainer";
-import { GeneratorFloatingNumbers } from "./generators/GeneratorFloatingNumbers";
-import { FloatingNumber } from "./animations/FloatingNumber";
+import { GeneratorVisualization } from "./generators/GeneratorVisualization";
+import { AnimationRenderer } from "./animations/AnimationRenderer";
 import { RippleSystem } from "./particles/RippleSystem";
-import type { FloatingNumberAnimation } from "../game/types";
 import Map from "./map/Map";
-import { calculateBlobPosition } from "../game/systems/calculations";
+import { createFloatingNumber } from "../utils/animation";
 
 export const GameScene: React.FC<GameSceneProps> = ({
   gameState,
@@ -17,9 +16,6 @@ export const GameScene: React.FC<GameSceneProps> = ({
   zoom,
 }) => {
   const currentLevel = getCurrentLevel(gameState);
-  const [floatingNumbers, setFloatingNumbers] = useState<
-    FloatingNumberAnimation[]
-  >([]);
   const [blobAnimationState, setBlobAnimationState] = useState<{
     clickBoost: number;
     pressure: number;
@@ -35,28 +31,10 @@ export const GameScene: React.FC<GameSceneProps> = ({
       color?: string,
       emoji?: string
     ) => {
-      const id = Math.random().toString();
-      const startTime = Date.now();
-
-      setFloatingNumbers((prev) => [
-        ...prev,
-        {
-          id,
-          type: "floatingNumber",
-          position,
-          value,
-          color,
-          startTime,
-          emoji,
-        },
-      ]);
+      createFloatingNumber(value, position, color, emoji);
     },
     []
   );
-
-  const removeFloatingNumber = useCallback((id: string) => {
-    setFloatingNumbers((prev) => prev.filter((anim) => anim.id !== id));
-  }, []);
 
   return (
     <div
@@ -64,7 +42,7 @@ export const GameScene: React.FC<GameSceneProps> = ({
       style={{ position: "relative", width: "100%", height: "100%" }}
     >
       {/* Background Layer with Zoom - z-index: 0 */}
-      <Map className="z-0" zoom={zoom} />
+      <Map className="z-0" zoom={zoom} gameState={gameState} />
 
       {/* Environment Effects Layer - z-index: 30 (outside zoom) */}
       <ParticleSystem
@@ -86,11 +64,8 @@ export const GameScene: React.FC<GameSceneProps> = ({
         onAnimationStateChange={setBlobAnimationState}
       />
 
-      {/* Generator Floating Numbers - z-index: 80 */}
-      <GeneratorFloatingNumbers
-        gameState={gameState}
-        blobPosition={calculateBlobPosition()}
-      />
+      {/* Generator Visualization - z-index: 80 */}
+      <GeneratorVisualization gameState={gameState} blobSize={blobSize} />
 
       {/* Ripple Effects Layer - z-index: 75 (above blob, below generators) */}
       <RippleSystem
@@ -98,31 +73,8 @@ export const GameScene: React.FC<GameSceneProps> = ({
         blobAnimationState={blobAnimationState}
       />
 
-      {/* Animation Layer - z-index: 90+ */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          pointerEvents: "none",
-          zIndex: 90,
-        }}
-      >
-        {/* Floating Numbers */}
-        {floatingNumbers.map((anim) => (
-          <FloatingNumber
-            key={anim.id}
-            value={anim.value}
-            position={anim.position}
-            color={anim.color}
-            startTime={anim.startTime}
-            onComplete={() => removeFloatingNumber(anim.id)}
-            emoji={anim.emoji}
-          />
-        ))}
-      </div>
+      {/* Unified Animation Renderer - z-index: 90+ */}
+      <AnimationRenderer gameState={gameState} />
     </div>
   );
 };

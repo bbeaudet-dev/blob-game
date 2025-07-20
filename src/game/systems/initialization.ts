@@ -59,6 +59,7 @@ export const INITIAL_STATE: GameState = {
     currentLevelId: 0, // Start at intro level
     highestLevelReached: 0,
     gameMode: 'tutorial',
+    isGameCompleted: false,
     notifications: {
         shownMilestones: new Set<string>(),
         totalClicks: 0,
