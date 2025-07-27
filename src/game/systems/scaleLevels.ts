@@ -24,7 +24,7 @@ export const getScaleLevel = (biomass: number): ScaleLevel => {
       description: "Visible colonies and cultures",
       unit: "10-100 μm",
       color: Colors.upgrades.primary,
-      icon: "🔍",
+      icon: "🧪",
     };
   } else if (biomass < 50000000) {
     return {
@@ -32,7 +32,7 @@ export const getScaleLevel = (biomass: number): ScaleLevel => {
       description: "Experimental scale organisms",
       unit: "0.1-1 mm",
       color: Colors.evolution.primary,
-      icon: "🧪",
+      icon: "⚗️",
     };
   } else if (biomass < 800000000) {
     return {
@@ -40,7 +40,7 @@ export const getScaleLevel = (biomass: number): ScaleLevel => {
       description: "Community-scale spread",
       unit: "1-100 m",
       color: Colors.headlines.primary,
-      icon: "🏘️",
+      icon: "🌳",
     };
   } else if (biomass < 15000000000) {
     return {
@@ -48,7 +48,7 @@ export const getScaleLevel = (biomass: number): ScaleLevel => {
       description: "City-wide influence",
       unit: "100 m - 10 km",
       color: Colors.biomass.secondary,
-      icon: "🏙️",
+      icon: "👱🏼",
     };
   } else if (biomass < 300000000000) {
     return {
@@ -56,7 +56,7 @@ export const getScaleLevel = (biomass: number): ScaleLevel => {
       description: "Continent-spanning presence",
       unit: "10-1000 km",
       color: Colors.shop.secondary,
-      icon: "🗺️",
+      icon: "🚓",
     };
   } else if (biomass < 100000000000000) {
     return {

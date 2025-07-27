@@ -7,7 +7,7 @@ export const GENERATORS: Record<string, Omit<GeneratorState, 'level'>> = {
     name: '🦠 Microscopic Cloner',
     baseCost: 10,
     description: 'Clones basic slime cells',
-    growthPerTick: 1.5,
+    growthPerTick: 1000000000000000, // 1Q per tick - absolutely broken for testing, used to be 1.5
     costMultiplier: 1.1,
     unlockedAtLevel: 'microscopic'
   },
@@ -15,7 +15,7 @@ export const GENERATORS: Record<string, Omit<GeneratorState, 'level'>> = {
   // Petri Dish Level
   'colony-expander': {
     id: 'colony-expander',
-    name: '🔍 Colony Expansion',
+    name: '🧪 Colony Expansion',
     baseCost: 100,
     description: 'Expands colonies for more biomass',
     growthPerTick: 10,
@@ -26,7 +26,7 @@ export const GENERATORS: Record<string, Omit<GeneratorState, 'level'>> = {
   // Lab Level
   'centrifuge-sorter': {
     id: 'centrifuge-sorter',
-    name: '🧪 Centrifuge Sorter',
+    name: '⚗️ Centrifuge Sorter',
     baseCost: 1000,
     description: 'Sorts cells for maximum efficiency',
     growthPerTick: 50,
@@ -35,7 +35,7 @@ export const GENERATORS: Record<string, Omit<GeneratorState, 'level'>> = {
   },
   'bioreactor-tank': {
     id: 'bioreactor-tank',
-    name: '🧪 Bioreactor Tank',
+    name: '🛢 Bioreactor Tank',
     baseCost: 12000,
     description: 'Massive bioreactor for rapid growth',
     growthPerTick: 260,
@@ -46,7 +46,7 @@ export const GENERATORS: Record<string, Omit<GeneratorState, 'level'>> = {
   // Neighborhood Level
   'backyard-colonizer': {
     id: 'backyard-colonizer',
-    name: '🏘️ Backyard Colonizer',
+    name: '🌳 Backyard Colonizer',
     baseCost: 130000,
     description: 'Colonizes suburban backyards',
     growthPerTick: 1400,
@@ -66,7 +66,7 @@ export const GENERATORS: Record<string, Omit<GeneratorState, 'level'>> = {
   // City Level
   'humanoid-slimes': {
     id: 'humanoid-slimes',
-    name: '🏙️ Humanoid Slimes',
+    name: '👱🏼 Humanoid Slimes',
     baseCost: 10000000, // Reduced from 20M
     description: 'Slimes disguised as humans',
     growthPerTick: 60000, // Increased from 44K
@@ -75,7 +75,7 @@ export const GENERATORS: Record<string, Omit<GeneratorState, 'level'>> = {
   },
   'sewer-colonies': {
     id: 'sewer-colonies',
-    name: '🏙️ Sewer Colonies',
+    name: '🚽 Sewer Colonies',
     baseCost: 120000000, // Reduced from 260M
     description: 'Colonies thriving in the sewers',
     growthPerTick: 400000, // Increased from 260K
@@ -86,7 +86,7 @@ export const GENERATORS: Record<string, Omit<GeneratorState, 'level'>> = {
   // Continent Level
   'national-highway-system': {
     id: 'national-highway-system',
-    name: '🗺️ National Highway System',
+    name: '🚓 National Highway System',
     baseCost: 3000000000, // Reduced from 7.1B
     description: 'Uses highway systems for rapid spread',
     growthPerTick: 5000000, // Increased from 1.5M
@@ -95,7 +95,7 @@ export const GENERATORS: Record<string, Omit<GeneratorState, 'level'>> = {
   },
   'railway-network': {
     id: 'railway-network',
-    name: '🗺️ Railway Network',
+    name: '🚇 Railway Network',
     baseCost: 35000000000, // Reduced from 83B
     description: 'Hijacks railway networks',
     growthPerTick: 35000000, // Increased from 8.3M

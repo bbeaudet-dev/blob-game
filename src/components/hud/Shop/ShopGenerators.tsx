@@ -26,7 +26,7 @@ interface GeneratorsProps {
   generatorFilter: "current" | "all";
   sortOption: "price" | "value" | "level";
   currentLevel: { name: string };
-  buyMultiplier: 1 | 10;
+  buyMultiplier: 1 | 10 | 50;
 }
 
 export const ShopGenerators: React.FC<GeneratorsProps> = ({
@@ -91,9 +91,9 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
       switch (sortOption) {
         case "price":
           // Price sorting: cheapest affordable first, then cheapest unaffordable
-          if (canAffordA !== canAffordB) {
-            return canAffordA ? -1 : 1;
-          }
+      if (canAffordA !== canAffordB) {
+        return canAffordA ? -1 : 1;
+      }
           // Within affordable/unaffordable groups, sort by price (cheapest first)
           return costA - costB;
 
@@ -102,12 +102,12 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
           if (canAffordA !== canAffordB) {
             return canAffordA ? -1 : 1;
           }
-          // Then sort by value (better value = higher growth/cost ratio)
-          const valueA = getGeneratorValueInfo(a.id, gameState);
-          const valueB = getGeneratorValueInfo(b.id, gameState);
-          if (valueA && valueB) {
-            return valueB.value - valueA.value; // Higher value = better, so put higher values first
-          }
+      // Then sort by value (better value = higher growth/cost ratio)
+      const valueA = getGeneratorValueInfo(a.id, gameState);
+      const valueB = getGeneratorValueInfo(b.id, gameState);
+      if (valueA && valueB) {
+        return valueB.value - valueA.value; // Higher value = better, so put higher values first
+      }
           return 0;
 
         case "level":
@@ -119,7 +119,7 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
           return 0;
 
         default:
-          return 0;
+      return 0;
       }
     });
   }, [

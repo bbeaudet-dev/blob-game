@@ -16,7 +16,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   // Petri Dish Level
   'temperature-control-module': {
     id: 'temperature-control-module',
-    name: '🔍 Temperature Control Module',
+    name: '🧪 Temperature Control Module',
     cost: 1500,
     description: '3x All Microscopic Generators',
     effect: 3,
@@ -26,7 +26,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   },
   'nutrient-enriched-agar': {
     id: 'nutrient-enriched-agar',
-    name: '🔍 Nutrient-Enriched Agar',
+    name: '🧪 Nutrient-Enriched Agar',
     cost: 2000,
     description: '3x All Petri Generators',
     effect: 3,
@@ -38,7 +38,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   // Lab Level
   'lab-assistant-automation': {
     id: 'lab-assistant-automation',
-    name: '🧪 Lab Assistant Automation',
+    name: '⚗️ Lab Assistant Automation',
     cost: 15000,
     description: '4x All Petri Generators',
     effect: 4,
@@ -48,7 +48,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   },
   'sterile-workflow': {
     id: 'sterile-workflow',
-    name: '🧪 Sterile Workflow',
+    name: '🛢 Sterile Workflow',
     cost: 120000,
     description: '4x All Lab Generators',
     effect: 4,
@@ -60,7 +60,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   // Neighborhood Level
   'neighborhood-awareness': {
     id: 'neighborhood-awareness',
-    name: '🏘️ Neighborhood Awareness',
+    name: '🌳 Neighborhood Awareness',
     cost: 1500000,
     description: '5x All Lab Generators',
     effect: 5,
@@ -70,7 +70,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   },
   'suburban-stealth': {
     id: 'suburban-stealth',
-    name: '🏘️ Suburban Stealth',
+    name: '🌳 Suburban Stealth',
     cost: 15000000,
     description: '5x All Neighborhood Generators',
     effect: 5,
@@ -82,7 +82,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   // City Level
   'mimicry-training': {
     id: 'mimicry-training',
-    name: '🏙️ Mimicry Training',
+    name: '👱🏼 Mimicry Training',
     cost: 80000000, // Reduced from 200M
     description: '6x All Lab Generators',
     effect: 6,
@@ -92,7 +92,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   },
   'urban-camouflage': {
     id: 'urban-camouflage',
-    name: '🏙️ Urban Camouflage',
+    name: '👱🏼 Urban Camouflage',
     cost: 1000000000, // Reduced from 2.6B
     description: '6x All City Generators',
     effect: 6,
@@ -104,7 +104,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   // Continent Level
   'intercontinental-railway': {
     id: 'intercontinental-railway',
-    name: '🗺️ Intercontinental Railway',
+    name: '🚓 Intercontinental Railway',
     cost: 25000000000, // Reduced from 71B
     description: '8x All Neighborhood Generators',
     effect: 8,
@@ -114,7 +114,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   },
   'continental-infrastructure': {
     id: 'continental-infrastructure',
-    name: '🗺️ Continental Infrastructure',
+    name: '🚇 Continental Infrastructure',
     cost: 300000000000, // Reduced from 830B
     description: '8x All Continent Generators',
     effect: 8,

@@ -9,7 +9,7 @@ import { useBlobSize } from "./hooks/useBlobSize";
 import { getCurrentLevel } from "./game/systems/actions";
 import { useIntroStore } from "./store/introStore";
 import { calculateBlobPosition } from "./game/systems/calculations";
-import { initSounds } from "./utils/sound"; // Add this import
+import { initSounds, playBackgroundMusic } from "./utils/sound"; // Add this import
 import { useEffect, useState } from "react"; // Add this import
 
 // Toast imports for GameComponent
@@ -21,10 +21,27 @@ function App() {
   const endIntro = useIntroStore((state) => state.endIntro);
   const gameHook = useGame();
   const [showCompletion, setShowCompletion] = useState(false);
+  const [musicStarted, setMusicStarted] = useState(false);
 
   // Initialize sounds when app loads
   useEffect(() => {
     initSounds();
+  }, []);
+
+  // Start music on first user interaction
+  const handleFirstInteraction = () => {
+    if (!musicStarted) {
+      playBackgroundMusic(0.24);
+      setMusicStarted(true);
+    }
+  };
+
+  useEffect(() => {
+    // Add click listener to start music
+    document.addEventListener('click', handleFirstInteraction, { once: true });
+    return () => {
+      document.removeEventListener('click', handleFirstInteraction);
+    };
   }, []);
 
   // Check for game completion
@@ -47,7 +64,7 @@ function App() {
   };
 
   return (
-    <div className="w-screen h-screen relative overflow-hidden">
+    <div className="w-screen h-screen relative overflow-hidden" onClick={handleFirstInteraction}>
       {/* Game Screen - always renders in background */}
       <GameComponent showIntro={showIntro} gameHook={gameHook} />
 

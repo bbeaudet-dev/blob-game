@@ -29,7 +29,7 @@ export const Shop: React.FC<ShopProps> = ({
   const [generatorFilter, setGeneratorFilter] = useState<"current" | "all">(
     "all"
   );
-  const [buyMultiplier, setBuyMultiplier] = useState<1 | 10>(1);
+  const [buyMultiplier, setBuyMultiplier] = useState<1 | 10 | 50>(1);
   const [sortOption, setSortOption] = useState<"price" | "value" | "level">("value");
 
   if (!gameState || !onBuyGenerator || !onBuyUpgrade) {

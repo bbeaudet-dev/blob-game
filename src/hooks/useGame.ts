@@ -12,6 +12,7 @@ import { GAME_CONFIG } from '../game/content/config';
 import { createTutorialState, progressTutorial, updateTutorial } from '../game/systems/tutorial';
 import type { TutorialState } from '../game/types/ui';
 import { saveGameState, loadGameState, saveTutorialState, loadTutorialState } from '../utils/persistence';
+import { switchMusicTheme } from '../utils/sound';
 
 export const useGame = () => {
   const [gameState, setGameState] = useState<GameState>(() => {
@@ -42,6 +43,29 @@ export const useGame = () => {
       },
     };
   });
+
+  // Music theme management based on level and tutorial state
+  useEffect(() => {
+    // Always play menu theme during tutorial
+    if (tutorialState.isActive) {
+      // Don't switch themes during tutorial - keep menu theme
+      return;
+    }
+
+    // Only switch themes when tutorial is NOT active
+    const currentLevelId = gameState.currentLevelId;
+    
+    if (currentLevelId >= 1 && currentLevelId <= 4) {
+      // Microscopic, Petri Dish, Lab, Neighborhood
+      switchMusicTheme('earlyTheme', 0.24);
+    } else if (currentLevelId >= 5 && currentLevelId <= 7) {
+      // City, Continent, Earth
+      switchMusicTheme('midgameTheme', 0.24);
+    } else if (currentLevelId >= 8) {
+      // Solar System and beyond
+      switchMusicTheme('finalTheme', 0.24);
+    }
+  }, [gameState.currentLevelId, tutorialState.isActive]);
 
   // Game loop
   useEffect(() => {
