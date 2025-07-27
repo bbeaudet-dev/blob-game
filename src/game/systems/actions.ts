@@ -196,8 +196,9 @@ export function evolveToNextLevel(state: GameState): GameState {
     // Check if this is the final level completion
     const isFinalLevel = nextLevel.name === 'galaxy';
     
-    // Play evolve sound for all levels except intro (intro sound is handled in UI)
-    if (state.currentLevelId > 0) {
+    // Play evolve sound for all levels except intro and final completion
+    // (intro sound is handled in UI, final completion sound is handled in GameCompletion)
+    if (state.currentLevelId > 0 && !isFinalLevel) {
         playSound('evolve');
     }
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useIntroStore } from '../store/introStore';
 import { Colors } from '../styles/colors';
-import { playSound } from '../utils/sound';
+import { playSound, switchMusicTheme } from '../utils/sound';
 
 interface IntroScreenProps {
   onTransitionStart: () => void;
@@ -24,6 +24,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onTransitionStart, onC
     setTimeout(() => {
         endIntro(); // Use Zustand store to end the intro
         playSound('evolve'); // Play evolve sound when game starts
+        switchMusicTheme('earlyTheme', 0.24); // Switch to early theme when tutorial ends
         onEvolve?.(); // Start the game progression (this should handle tutorial state)
         onComplete(); // Keep the original callback for any additional logic
     }, 500); // Reduced from 1000ms to 500ms

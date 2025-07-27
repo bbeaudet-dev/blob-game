@@ -163,33 +163,33 @@ export const ShopUpgrades: React.FC<UpgradesProps> = ({
           marginBottom: "10px",
         }}
       >
-        {(() => {
-          const upgrades = Object.values(gameState.upgrades).filter((upgrade) => {
-            // Always show tutorial upgrade during tutorial
-            if (upgrade.id === "tutorial-upgrade") {
-              return tutorialState?.isActive;
-            }
+      {(() => {
+        const upgrades = Object.values(gameState.upgrades).filter((upgrade) => {
+          // Always show tutorial upgrade during tutorial
+          if (upgrade.id === "tutorial-upgrade") {
+            return tutorialState?.isActive;
+          }
 
-            if (generatorFilter === "current") {
-              // Only show upgrades from current level
-              return upgrade.unlockedAtLevel === currentLevel.name;
-            } else {
-              // Show all unlocked upgrades
-              return isContentAvailable(upgrade.unlockedAtLevel);
-            }
-          });
+          if (generatorFilter === "current") {
+            // Only show upgrades from current level
+            return upgrade.unlockedAtLevel === currentLevel.name;
+          } else {
+            // Show all unlocked upgrades
+            return isContentAvailable(upgrade.unlockedAtLevel);
+          }
+        });
 
-          // Tutorial upgrade is now included in game state, so no need to add it here
+        // Tutorial upgrade is now included in game state, so no need to add it here
 
-          return upgrades;
-        })()
-          .sort((a, b) => {
-            // Sort unpurchased first, then purchased
-            if (a.purchased && !b.purchased) return 1;
-            if (!a.purchased && b.purchased) return -1;
-            return 0;
-          })
-          .map((upgrade) => {
+        return upgrades;
+      })()
+        .sort((a, b) => {
+          // Sort unpurchased first, then purchased
+          if (a.purchased && !b.purchased) return 1;
+          if (!a.purchased && b.purchased) return -1;
+          return 0;
+        })
+        .map((upgrade) => {
           const canAfford =
             (biomass >= upgrade.cost || upgrade.id === "tutorial-upgrade") &&
             !upgrade.purchased;

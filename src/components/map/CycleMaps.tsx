@@ -2,8 +2,13 @@ import { useState } from "react";
 import { useMapSelector } from "../../game/systems/mapState";
 import { LEVELS } from "../../game/content/levels";
 import Map from "./Map";
+import type { GameState } from "../../game/types";
 
-export default function CycleMaps() {
+interface CycleMapsProps {
+  gameState: GameState;
+}
+
+export default function CycleMaps({ gameState }: CycleMapsProps) {
   const [isDark, setIsDark] = useState(true);
   const currentLevel = useMapSelector((s) => s.currentLevel);
   const setLevel = useMapSelector((s) => s.setLevel);
@@ -17,7 +22,7 @@ export default function CycleMaps() {
   return (
     <div className="h-full w-full relative">
       {/* Your app content here */}
-      <Map className="w-full h-screen" />
+      <Map className="w-full h-screen" gameState={gameState} />
 
       {/* Controls in top right */}
       <div className="absolute top-4 right-4 flex gap-2 z-10">

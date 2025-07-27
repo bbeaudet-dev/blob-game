@@ -1,6 +1,6 @@
 import React from "react";
 import { useIntroStore } from "../../../store/introStore";
-import { playSound, playBackgroundMusic } from "../../../utils/sound"; // Add playBackgroundMusic to the import
+import { playSound, playBackgroundMusic, pauseBackgroundMusic } from "../../../utils/sound"; // Add pauseBackgroundMusic to the import
 import { Colors } from "../../../styles/colors";
 
 interface EvolutionButtonProps {
@@ -49,7 +49,8 @@ export const EvolutionButton: React.FC<EvolutionButtonProps> = ({
 
   // Determine button text based on current level
   const isIntroLevel = currentLevelId === 0;
-  const buttonText = isIntroLevel ? "Start Game!" : "Evolve!";
+  const isFinalLevel = currentLevelId === 8; // Galaxy level (final level)
+  const buttonText = isIntroLevel ? "Start Game!" : isFinalLevel ? "Complete Game!" : "Evolve!";
   const notReadyText = isIntroLevel ? "Not Ready" : "Not Ready";
 
   const handleClick = () => {
@@ -59,6 +60,10 @@ export const EvolutionButton: React.FC<EvolutionButtonProps> = ({
       playBackgroundMusic(0.3); // Start background music at 30% volume
       startIntro();
       // Game progression will happen after animation completes via IntroScreen
+    } else if (isFinalLevel) {
+      // For final level: pause music and complete game
+      pauseBackgroundMusic();
+      onEvolve?.();
     } else {
       // For other levels, use the normal evolve behavior
       onEvolve?.();

@@ -30,7 +30,7 @@ export const LEVELS: Level[] = [
   {
     id: 2,
     name: 'petri-dish',
-    displayName: '🔍 Petri Dish',
+    displayName: '🧪 Petri Dish',
     biomassThreshold: 1000,
     biomassDisplayFormat: 'whole',
     background: 'petri-bg',
@@ -42,7 +42,7 @@ export const LEVELS: Level[] = [
   {
     id: 3,
     name: 'lab',
-    displayName: '🧪 Lab',
+    displayName: '⚗️ Lab',
     biomassThreshold: 25000,
     biomassDisplayFormat: 'whole',
     background: 'lab-bg',
@@ -54,7 +54,7 @@ export const LEVELS: Level[] = [
   {
     id: 4,
     name: 'neighborhood',
-    displayName: '🏘️ Neighborhood',
+    displayName: '🌳 Neighborhood',
     biomassThreshold: 500000,
     biomassDisplayFormat: 'whole',
     background: 'neighborhood-bg',
@@ -66,7 +66,7 @@ export const LEVELS: Level[] = [
   {
     id: 5,
     name: 'city',
-    displayName: '🏙️ City',
+    displayName: '👱🏼 City',
     biomassThreshold: 20000000, // Reduced from 40M
     biomassDisplayFormat: 'whole',
     background: 'city-bg',
@@ -78,7 +78,7 @@ export const LEVELS: Level[] = [
   {
     id: 6,
     name: 'continent',
-    displayName: '🗺️ Continent',
+    displayName: '🚓 Continent',
     biomassThreshold: 3000000000, // 3B
     biomassDisplayFormat: 'whole',
     background: 'continent-bg',
