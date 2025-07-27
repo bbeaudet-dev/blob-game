@@ -5,6 +5,8 @@
 | [🎮 **PLAY HERE**](https://sublobination.netlify.app/) |
 | :--------------------------------------------------------: |
 
+Endgame cutscene: https://youtu.be/qy6Xl-xRuKU
+
 </div>
 
 ## Project Information
