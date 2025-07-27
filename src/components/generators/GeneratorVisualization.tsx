@@ -57,10 +57,6 @@ export const GeneratorVisualization: React.FC<GeneratorVisualizationProps> = ({ 
 
     if (activeGenerators.length === 0) return emojis;
 
-    // Calculate total emojis to determine ring spacing and speed
-    const totalEmojis = activeGenerators.reduce((sum, gen) => sum + gen.level, 0);
-    const baseSpeed = Math.min(0.5, 0.1 + (totalEmojis * 0.002)); // Slower speed for better performance
-    
     // Create dynamic rings based on number of generator types
     const ringSpacing = 25; // Bigger spacing between rings
     
