@@ -9,7 +9,7 @@ import { useBlobSize } from "./hooks/useBlobSize";
 import { getCurrentLevel } from "./game/systems/actions";
 import { useIntroStore } from "./store/introStore";
 import { calculateBlobPosition } from "./game/systems/calculations";
-import { initSounds, playBackgroundMusic } from "./utils/sound"; // Add this import
+import { initSounds, playBackgroundMusic, setBackgroundMusicVolume } from "./utils/sound"; // Add this import
 import { useEffect, useState } from "react"; // Add this import
 
 // Toast imports for GameComponent
@@ -31,7 +31,7 @@ function App() {
   // Start music on first user interaction
   const handleFirstInteraction = () => {
     if (!musicStarted) {
-      playBackgroundMusic(0.24);
+      playBackgroundMusic(0.7); // Increased from 0.35 to 0.7 (70%)
       setMusicStarted(true);
     }
   };
@@ -103,6 +103,23 @@ function GameComponent({
     handleEvolve,
   } = gameHook;
 
+  // Generator visualization settings state
+  const [outerRingsFaster, setOuterRingsFaster] = useState(true); // Default to outer faster
+  const [equalNumbers, setEqualNumbers] = useState(true); // Default to equal numbers
+  
+  // Particle settings state
+  const [particleDensity, setParticleDensity] = useState<"low" | "medium" | "high">("medium");
+  const [particleSpeed, setParticleSpeed] = useState<"slow" | "normal" | "fast">("normal");
+  const [particleSize, setParticleSize] = useState<"small" | "normal" | "large">("normal");
+  
+  // Audio settings state
+  const [soundEffectsVolume, setSoundEffectsVolume] = useState(0.3);
+  const [musicVolume, setMusicVolume] = useState(0.7); // Increased from 0.35 to 0.7 (70%)
+  
+
+  
+
+
   const currentLevel = getCurrentLevel(gameState);
   const currentZoom = useCameraZoom({ gameState, currentLevel });
   const blobSize = useBlobSize(gameState);
@@ -124,6 +141,17 @@ function GameComponent({
         blobSize={blobSize}
         onBlobClick={handleBlobClick}
         zoom={currentZoom}
+        
+        // Generator visualization
+        outerRingsFaster={outerRingsFaster}
+        equalNumbers={equalNumbers}
+        
+        // Particle customization
+        particleDensity={particleDensity}
+        particleSpeed={particleSpeed}
+        particleSize={particleSize}
+        
+
       />
 
       {/* HUD Layer - UI overlays */}
@@ -136,6 +164,34 @@ function GameComponent({
         onEvolve={handleEvolve}
         onTutorialStepComplete={gameHook.handleTutorialStepComplete}
         blobSize={blobSize}
+        
+        // Generator visualization
+        outerRingsFaster={outerRingsFaster}
+        onOuterRingsFasterChange={setOuterRingsFaster}
+        equalNumbers={equalNumbers}
+        onEqualNumbersChange={setEqualNumbers}
+        
+                  // Particle settings
+          particleDensity={particleDensity}
+          onParticleDensityChange={setParticleDensity}
+          particleSpeed={particleSpeed}
+          onParticleSpeedChange={setParticleSpeed}
+          particleSize={particleSize}
+          onParticleSizeChange={setParticleSize}
+        
+        // Audio settings
+        soundEffectsVolume={soundEffectsVolume}
+        onSoundEffectsVolumeChange={(volume) => {
+          setSoundEffectsVolume(volume);
+          setSoundEffectsVolume(volume); // Call the utility function from sound.ts
+        }}
+        musicVolume={musicVolume}
+        onMusicVolumeChange={(volume) => {
+          setMusicVolume(volume);
+          setBackgroundMusicVolume(volume);
+        }}
+        
+        
       />
 
       {/* Toast Notifications - Aligned with blob horizontally */}

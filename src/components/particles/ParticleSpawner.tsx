@@ -26,6 +26,12 @@ interface ParticleSpawnerProps {
   gameState: GameState;
   currentLevel: Level;
   blobSize: number; // Need blob size for proper scaling
+  
+  // Particle customization
+  particleDensity?: "low" | "medium" | "high";
+  particleSpeed?: "slow" | "normal" | "fast";
+  particleSize?: "small" | "normal" | "large";
+  
   children: (
     particles: Particle[],
     burstParticles: BurstParticle[]
@@ -36,6 +42,12 @@ export const ParticleSpawner: React.FC<ParticleSpawnerProps> = ({
   gameState,
   currentLevel,
   blobSize,
+  
+  // Particle customization
+  particleDensity = "medium",
+  particleSpeed = "normal",
+  particleSize = "normal",
+  
   children,
 }) => {
   const [particles, setParticles] = useState<Particle[]>([]);
@@ -48,10 +60,29 @@ export const ParticleSpawner: React.FC<ParticleSpawnerProps> = ({
   });
 
   // Get particle configuration from game engine
-  const particleConfig = useMemo(
+  const baseParticleConfig = useMemo(
     () => calculateParticleConfig(gameState),
     [gameState]
   );
+  
+  // Apply customization settings
+  const particleConfig = useMemo(() => {
+    const config = { ...baseParticleConfig };
+    
+    // Apply density multiplier
+    const densityMultipliers = { low: 0.3, medium: 1.0, high: 2.5 };
+    config.spawnRate *= densityMultipliers[particleDensity];
+    
+    // Apply speed multiplier
+    const speedMultipliers = { slow: 0.6, normal: 1.0, fast: 3.0 };
+    config.speed *= speedMultipliers[particleSpeed];
+    
+    // Apply size multiplier
+    const sizeMultipliers = { small: 0.6, normal: 1.0, large: 1.5 };
+    config.size *= sizeMultipliers[particleSize];
+    
+    return config;
+  }, [baseParticleConfig, particleDensity, particleSpeed, particleSize]);
 
   // Get blob position - use the same calculation as the blob itself
   const blobPosition = useMemo(() => calculateBlobPosition(), []);
@@ -252,13 +283,16 @@ export const ParticleSpawner: React.FC<ParticleSpawnerProps> = ({
         break;
     }
 
+    // Use default particle color
+    const finalColor = particleConfig.color;
+
     const particle = {
       id: Math.random().toString(36),
       x,
       y,
       speed: particleConfig.speed,
       size: particleConfig.size * particleConfig.sizeVariation,
-      color: particleConfig.color,
+      color: finalColor,
       type: visualType,
       useImage,
       image,

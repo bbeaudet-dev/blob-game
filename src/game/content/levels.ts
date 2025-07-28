@@ -19,7 +19,7 @@ export const LEVELS: Level[] = [
     id: 1,
     name: 'microscopic',
     displayName: '🦠 Microscopic',
-    biomassThreshold: 1,
+    biomassThreshold: 2, // Increased from 1 to be above generator cost
     biomassDisplayFormat: 'decimal',
     background: 'microscopic-bg',
     foodTypes: [],
@@ -31,7 +31,7 @@ export const LEVELS: Level[] = [
     id: 2,
     name: 'petri-dish',
     displayName: '🧪 Petri Dish',
-    biomassThreshold: 1000,
+    biomassThreshold: 2000, // Increased from 500 to be above upgrade costs
     biomassDisplayFormat: 'whole',
     background: 'petri-bg',
     foodTypes: [],
@@ -43,7 +43,7 @@ export const LEVELS: Level[] = [
     id: 3,
     name: 'lab',
     displayName: '⚗️ Lab',
-    biomassThreshold: 25000,
+    biomassThreshold: 100000, // Increased from 25K to be above upgrade costs
     biomassDisplayFormat: 'whole',
     background: 'lab-bg',
     foodTypes: [],
@@ -55,7 +55,7 @@ export const LEVELS: Level[] = [
     id: 4,
     name: 'neighborhood',
     displayName: '🌳 Neighborhood',
-    biomassThreshold: 500000,
+    biomassThreshold: 5000000, // Increased from 2.5M to be above upgrade costs
     biomassDisplayFormat: 'whole',
     background: 'neighborhood-bg',
     foodTypes: [],
@@ -67,7 +67,7 @@ export const LEVELS: Level[] = [
     id: 5,
     name: 'city',
     displayName: '👱🏼 City',
-    biomassThreshold: 20000000, // Reduced from 40M
+    biomassThreshold: 200000000, // Increased from 500M to be above upgrade costs
     biomassDisplayFormat: 'whole',
     background: 'city-bg',
     foodTypes: [],
@@ -79,7 +79,7 @@ export const LEVELS: Level[] = [
     id: 6,
     name: 'continent',
     displayName: '🚓 Continent',
-    biomassThreshold: 3000000000, // 3B
+    biomassThreshold: 10000000000, // Increased from 7.5B to be above generator costs
     biomassDisplayFormat: 'whole',
     background: 'continent-bg',
     foodTypes: [],
@@ -91,7 +91,7 @@ export const LEVELS: Level[] = [
     id: 7,
     name: 'earth',
     displayName: '🌍 Earth',
-    biomassThreshold: 5000000000000, // Reduced to 5T (much more reasonable)
+    biomassThreshold: 10000000000000, // Increased from 100B to be above generator costs
     biomassDisplayFormat: 'whole',
     background: 'earth-bg',
     foodTypes: [],
@@ -103,34 +103,54 @@ export const LEVELS: Level[] = [
     id: 8,
     name: 'solar-system',
     displayName: '🚀 Solar System',
-    biomassThreshold: 1000000000000000, // Reduced to 1Q
-    biomassDisplayFormat: 'scientific',
+    biomassThreshold: 5000000000000000, // 1 Quintillion - Increased from 50T to be above generator costs
+    biomassDisplayFormat: 'whole',
     background: 'solar-system-bg',
     foodTypes: [],
-    description: 'Expand your reach to the solar system.',
-    blobSizeStart: 260,
+    description: 'Expand beyond Earth into the solar system.',
+    blobSizeStart: 280,
     blobSizeEnd: 1200
   },
   {
     id: 9,
     name: 'galaxy',
     displayName: '🌌 Galaxy',
-    biomassThreshold: 1000000000000000000, // 1Qi threshold for completion
-    biomassDisplayFormat: 'scientific',
-    background: 'solar-system-bg', // Reuse solar system background for now
+    biomassThreshold: 2500000000000000000000, // 2.5 Sextillion - final threshold
+    biomassDisplayFormat: 'whole',
+    background: 'galaxy-bg',
     foodTypes: [],
-    description: 'You have consumed the entire galaxy. The universe is yours.',
-    blobSizeStart: 260,
+    description: 'Spread across the entire galaxy.',
+    blobSizeStart: 300,
     blobSizeEnd: 1200
   }
 ];
 
+// Helper function to get the next level
 export function getNextLevel(currentLevel: Level): Level | null {
   const currentIndex = LEVELS.findIndex(level => level.id === currentLevel.id);
-  if (currentIndex >= LEVELS.length - 1) {
-    return null; // Already at max level
+  if (currentIndex === -1 || currentIndex === LEVELS.length - 1) {
+    return null;
   }
   return LEVELS[currentIndex + 1];
+}
+
+// Helper function to get the previous level
+export function getPreviousLevel(currentLevel: Level): Level | null {
+  const currentIndex = LEVELS.findIndex(level => level.id === currentLevel.id);
+  if (currentIndex <= 0) {
+    return null;
+  }
+  return LEVELS[currentIndex - 1];
+}
+
+// Helper function to get level by name
+export function getLevelByName(name: string): Level | null {
+  return LEVELS.find(level => level.name === name) || null;
+}
+
+// Helper function to get level by id
+export function getLevelById(id: number): Level | null {
+  return LEVELS.find(level => level.id === id) || null;
 }
 
 

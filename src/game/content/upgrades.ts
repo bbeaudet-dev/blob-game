@@ -5,7 +5,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   'enhanced-microscope-optics': {
     id: 'enhanced-microscope-optics',
     name: '🦠 Enhanced Microscope Optics',
-    cost: 100,
+    cost: 50, // Reduced from 100 to be more affordable
     description: '2x Microscopic Cloner',
     effect: 2,
     type: 'growth',
@@ -17,7 +17,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   'temperature-control-module': {
     id: 'temperature-control-module',
     name: '🧪 Temperature Control Module',
-    cost: 1500,
+    cost: 500, // Reduced from 1500 to be more affordable
     description: '3x All Microscopic Generators',
     effect: 3,
     type: 'growth',
@@ -27,7 +27,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   'nutrient-enriched-agar': {
     id: 'nutrient-enriched-agar',
     name: '🧪 Nutrient-Enriched Agar',
-    cost: 2000,
+    cost: 1000, // Reduced from 2000 to be more affordable
     description: '3x All Petri Generators',
     effect: 3,
     type: 'growth',
@@ -39,7 +39,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   'lab-assistant-automation': {
     id: 'lab-assistant-automation',
     name: '⚗️ Lab Assistant Automation',
-    cost: 15000,
+    cost: 5000, // Reduced from 15000 to be more affordable
     description: '4x All Petri Generators',
     effect: 4,
     type: 'growth',
@@ -49,7 +49,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   'sterile-workflow': {
     id: 'sterile-workflow',
     name: '🛢 Sterile Workflow',
-    cost: 120000,
+    cost: 50000, // Reduced from 120000 to be more affordable
     description: '4x All Lab Generators',
     effect: 4,
     type: 'growth',
@@ -61,7 +61,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   'neighborhood-awareness': {
     id: 'neighborhood-awareness',
     name: '🌳 Neighborhood Awareness',
-    cost: 1500000,
+    cost: 500000, // Reduced from 1500000 to be more affordable
     description: '5x All Lab Generators',
     effect: 5,
     type: 'growth',
@@ -71,7 +71,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   'suburban-stealth': {
     id: 'suburban-stealth',
     name: '🌳 Suburban Stealth',
-    cost: 15000000,
+    cost: 5000000, // Reduced from 15000000 to be more affordable
     description: '5x All Neighborhood Generators',
     effect: 5,
     type: 'growth',
@@ -83,7 +83,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   'mimicry-training': {
     id: 'mimicry-training',
     name: '👱🏼 Mimicry Training',
-    cost: 80000000, // Reduced from 200M
+    cost: 20000000, // Reduced from 80000000 to be more affordable
     description: '6x All Lab Generators',
     effect: 6,
     type: 'growth',
@@ -93,7 +93,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   'urban-camouflage': {
     id: 'urban-camouflage',
     name: '👱🏼 Urban Camouflage',
-    cost: 1000000000, // Reduced from 2.6B
+    cost: 200000000, // Reduced from 1000000000 to be more affordable
     description: '6x All City Generators',
     effect: 6,
     type: 'growth',
@@ -105,7 +105,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   'intercontinental-railway': {
     id: 'intercontinental-railway',
     name: '🚓 Intercontinental Railway',
-    cost: 25000000000, // Reduced from 71B
+    cost: 5000000000, // Reduced from 25000000000 to be more affordable
     description: '8x All Neighborhood Generators',
     effect: 8,
     type: 'growth',
@@ -115,7 +115,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   'continental-infrastructure': {
     id: 'continental-infrastructure',
     name: '🚇 Continental Infrastructure',
-    cost: 300000000000, // Reduced from 830B
+    cost: 50000000000, // Reduced from 300000000000 to be more affordable
     description: '8x All Continent Generators',
     effect: 8,
     type: 'growth',
@@ -127,7 +127,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   'global-shipping-network': {
     id: 'global-shipping-network',
     name: '🌍 Global Shipping Network',
-    cost: 80000000000000, // Increased for higher threshold
+    cost: 1000000000000, // Reduced from 80000000000000 to be more affordable
     description: '10x All Continent Generators',
     effect: 10,
     type: 'growth',
@@ -137,7 +137,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   'planetary-dominance': {
     id: 'planetary-dominance',
     name: '🌍 Planetary Dominance',
-    cost: 5000000000000000, // Increased for higher threshold
+    cost: 10000000000000, // Reduced from 5000000000000000 to be more affordable
     description: '10x All Earth Generators',
     effect: 10,
     type: 'growth',
@@ -149,7 +149,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   'interplanetary-transport': {
     id: 'interplanetary-transport',
     name: '🚀 Interplanetary Transport',
-    cost: 200000000000000000, // 200Q - affordable at 1Q threshold
+    cost: 100000000000000, // Reduced from 200000000000000000 to be more affordable
     description: '12x All Earth Generators',
     effect: 12,
     type: 'growth',
@@ -159,7 +159,7 @@ export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
   'stellar-expansion': {
     id: 'stellar-expansion',
     name: '🚀 Stellar Expansion',
-    cost: 1500000000000000000, // 1.5Qi - affordable at 1Q threshold
+    cost: 1000000000000000, // Reduced from 1500000000000000000 to be more affordable
     description: '12x All Solar System Generators',
     effect: 12,
     type: 'growth',

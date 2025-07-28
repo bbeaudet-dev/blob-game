@@ -10,18 +10,52 @@ export interface GameSceneProps {
   blobSize: number;
   onBlobClick: (blobId: string, clickPosition: { x: number; y: number }) => void;
   zoom?: number;
+  
+  // Generator visualization
+  outerRingsFaster?: boolean;
+  equalNumbers?: boolean;
+  
+  // Particle customization
+  particleDensity?: "low" | "medium" | "high";
+  particleSpeed?: "slow" | "normal" | "fast";
+  particleSize?: "small" | "normal" | "large";
+  
+  // Blob effects
+  clickSensitivity?: "low" | "normal" | "high";
 }
 
 export interface GameHUDProps {
   biomass: number;
   gameState?: GameState;
   tutorialState?: TutorialState;
-  onBuyGenerator?: (generatorId: string) => void;
+  onBuyGenerator?: (generatorId: string, count?: number) => void;
   onBuyUpgrade?: (upgradeId: string) => void;
   onEvolve?: () => void;
   onTutorialStepComplete?: (stepId: string) => void;
   blobSize?: number;
   zoom?: number;
+  
+  // Generator visualization
+  outerRingsFaster?: boolean;
+  onOuterRingsFasterChange?: (value: boolean) => void;
+  equalNumbers?: boolean;
+  onEqualNumbersChange?: (value: boolean) => void;
+  
+  // Particle settings
+  particleDensity?: "low" | "medium" | "high";
+  onParticleDensityChange?: (value: "low" | "medium" | "high") => void;
+  particleSpeed?: "slow" | "normal" | "fast";
+  onParticleSpeedChange?: (value: "slow" | "normal" | "fast") => void;
+  particleSize?: "small" | "normal" | "large";
+  onParticleSizeChange?: (value: "small" | "normal" | "large") => void;
+  
+  // Audio settings
+  soundEffectsVolume?: number;
+  onSoundEffectsVolumeChange?: (value: number) => void;
+  musicVolume?: number;
+  onMusicVolumeChange?: (value: number) => void;
+  
+
 }
 
 export interface GameStatsProps {
@@ -33,14 +67,14 @@ export interface GameStatsProps {
 export interface ShopProps {
   biomass: number;
   gameState?: GameState;
-  onBuyGenerator?: (generatorId: string) => void;
+  onBuyGenerator?: (generatorId: string, count?: number) => void;
   onBuyUpgrade?: (upgradeId: string) => void;
 }
 
 export interface GeneratorsProps {
   biomass: number;
   gameState: GameState;
-  onBuyGenerator: (generatorId: string) => void;
+  onBuyGenerator: (generatorId: string, count?: number) => void;
   generatorFilter: 'current' | 'all';
   currentLevel: { name: string };
   buyMultiplier: 1 | 10 | 100;
@@ -76,6 +110,10 @@ export interface EvolutionPanelProps {
   onEvolve?: () => void;
   blobSize?: number;
   zoom?: number;
+  outerRingsFaster?: boolean;
+  onOuterRingsFasterChange?: (value: boolean) => void;
+  equalNumbers?: boolean;
+  onEqualNumbersChange?: (value: boolean) => void;
 }
 
 export interface CurrentLevelProps {
@@ -107,6 +145,8 @@ export interface BlobContainerProps extends Omit<BlobProps, "position"> {
   clickPower: number;
   addFloatingNumber: (position: { x: number; y: number }, value: number, color?: string, emoji?: string) => void;
   onAnimationStateChange?: (animationState: { clickBoost: number; pressure: number }) => void;
+  
+
 }
 
 export interface BlobRippleContainerProps {

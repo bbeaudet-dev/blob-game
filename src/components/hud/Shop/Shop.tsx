@@ -15,7 +15,7 @@ interface ShopProps {
   biomass: number;
   gameState?: GameState;
   tutorialState?: TutorialState;
-  onBuyGenerator?: (generatorId: string) => void;
+  onBuyGenerator?: (generatorId: string, count?: number) => void;
   onBuyUpgrade?: (upgradeId: string) => void;
 }
 
@@ -39,10 +39,8 @@ export const Shop: React.FC<ShopProps> = ({
   const currentLevel = getCurrentLevel(gameState);
 
   const handleBuyGenerator = (generatorId: string) => {
-    // Buy multiple generators based on multiplier
-    for (let i = 0; i < buyMultiplier; i++) {
-      onBuyGenerator(generatorId);
-    }
+    // Use bulk purchase function to avoid sound effect spam
+    onBuyGenerator(generatorId, buyMultiplier);
   };
 
   const handleBuyUpgrade = (upgradeId: string) => {
@@ -147,6 +145,8 @@ export const Shop: React.FC<ShopProps> = ({
           generatorFilter={generatorFilter}
           currentLevel={currentLevel}
         />
+
+
       </div>
 
       <style>{`

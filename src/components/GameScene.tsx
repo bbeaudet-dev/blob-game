@@ -14,6 +14,17 @@ export const GameScene: React.FC<GameSceneProps> = ({
   blobSize,
   onBlobClick,
   zoom,
+  
+  // Generator visualization
+  outerRingsFaster = true,
+  equalNumbers = true,
+  
+  // Particle customization
+  particleDensity = "medium",
+  particleSpeed = "normal",
+  particleSize = "normal",
+  
+
 }) => {
   const currentLevel = getCurrentLevel(gameState);
   const [blobAnimationState, setBlobAnimationState] = useState<{
@@ -49,6 +60,9 @@ export const GameScene: React.FC<GameSceneProps> = ({
         gameState={gameState}
         currentLevel={currentLevel}
         blobSize={blobSize}
+        particleDensity={particleDensity}
+        particleSpeed={particleSpeed}
+        particleSize={particleSize}
       />
 
       {/* Player Layer - z-index: 70+ (outside zoom) */}
@@ -62,10 +76,16 @@ export const GameScene: React.FC<GameSceneProps> = ({
         clickPower={gameState.clickPower}
         addFloatingNumber={addFloatingNumber}
         onAnimationStateChange={setBlobAnimationState}
+
       />
 
       {/* Generator Visualization - z-index: 80 */}
-      <GeneratorVisualization gameState={gameState} blobSize={blobSize} />
+      <GeneratorVisualization 
+        gameState={gameState} 
+        blobSize={blobSize} 
+        outerRingsFaster={outerRingsFaster}
+        equalNumbers={equalNumbers}
+      />
 
       {/* Ripple Effects Layer - z-index: 75 (above blob, below generators) */}
       <RippleSystem

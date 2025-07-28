@@ -5,6 +5,8 @@ import type { GameState } from '../../game/types';
 interface GeneratorVisualizationProps {
   gameState: GameState;
   blobSize?: number;
+  outerRingsFaster?: boolean;
+  equalNumbers?: boolean;
 }
 
 interface GeneratorEmoji {
@@ -34,10 +36,13 @@ const GENERATOR_EMOJIS: Record<string, string> = {
   'starship-incubator': '🛸',
 };
 
-export const GeneratorVisualization: React.FC<GeneratorVisualizationProps> = ({ gameState, blobSize = 0 }) => {
+export const GeneratorVisualization: React.FC<GeneratorVisualizationProps> = ({ 
+  gameState, 
+  blobSize = 0,
+  outerRingsFaster = true,
+  equalNumbers = true
+}) => {
   const [time, setTime] = useState(0);
-  const [outerRingsFaster, setOuterRingsFaster] = useState(false);
-  const [equalNumbers, setEqualNumbers] = useState(false);
   const blobPosition = useMemo(() => calculateBlobPosition(), []);
 
   // Update time for rotation animation
@@ -160,83 +165,6 @@ export const GeneratorVisualization: React.FC<GeneratorVisualizationProps> = ({ 
           </div>
         ))}
       </div>
-      
-      {/* Speed Direction Toggle Button */}
-      <button
-        onClick={() => {
-          console.log('Speed toggle clicked! Current state:', outerRingsFaster);
-          setOuterRingsFaster(!outerRingsFaster);
-        }}
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 1000,
-          padding: '12px 16px',
-          fontSize: '14px',
-          fontWeight: 'bold',
-          backgroundColor: '#4ade80',
-          color: 'white',
-          border: 'none',
-          borderRadius: '8px',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          boxShadow: '0 0 15px rgba(74, 222, 128, 0.4)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = '#22c55e';
-          e.currentTarget.style.boxShadow = '0 0 20px rgba(74, 222, 128, 0.6)';
-          e.currentTarget.style.transform = 'scale(1.05)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = '#4ade80';
-          e.currentTarget.style.boxShadow = '0 0 15px rgba(74, 222, 128, 0.4)';
-          e.currentTarget.style.transform = 'scale(1)';
-        }}
-      >
-        {outerRingsFaster ? 'Inner Faster' : 'Outer Faster'}
-      </button>
-      
-      {/* Emoji Distribution Toggle Button */}
-      <button
-        onClick={() => {
-          console.log('Distribution toggle clicked! Current state:', equalNumbers);
-          setEqualNumbers(!equalNumbers);
-        }}
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          left: 'calc(50% + 120px)',
-          zIndex: 1000,
-          padding: '12px 16px',
-          fontSize: '14px',
-          fontWeight: 'bold',
-          backgroundColor: '#4ade80',
-          color: 'white',
-          border: 'none',
-          borderRadius: '8px',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          boxShadow: '0 0 15px rgba(74, 222, 128, 0.4)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = '#22c55e';
-          e.currentTarget.style.boxShadow = '0 0 20px rgba(74, 222, 128, 0.6)';
-          e.currentTarget.style.transform = 'scale(1.05)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = '#4ade80';
-          e.currentTarget.style.boxShadow = '0 0 15px rgba(74, 222, 128, 0.4)';
-          e.currentTarget.style.transform = 'scale(1)';
-        }}
-      >
-        {equalNumbers ? 'Equal Spacing' : 'Equal Numbers'}
-      </button>
     </>
   );
 }; 

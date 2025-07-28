@@ -97,18 +97,19 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
           // Within affordable/unaffordable groups, sort by price (cheapest first)
           return costA - costB;
 
-        case "value":
+        case "value": {
           // Value sorting: current algorithm (affordability + value)
           if (canAffordA !== canAffordB) {
             return canAffordA ? -1 : 1;
           }
-      // Then sort by value (better value = higher growth/cost ratio)
-      const valueA = getGeneratorValueInfo(a.id, gameState);
-      const valueB = getGeneratorValueInfo(b.id, gameState);
-      if (valueA && valueB) {
-        return valueB.value - valueA.value; // Higher value = better, so put higher values first
-      }
+          // Then sort by value (better value = higher growth/cost ratio)
+          const valueA = getGeneratorValueInfo(a.id, gameState);
+          const valueB = getGeneratorValueInfo(b.id, gameState);
+          if (valueA && valueB) {
+            return valueB.value - valueA.value; // Higher value = better, so put higher values first
+          }
           return 0;
+        }
 
         case "level":
           // Level sorting: keep in order of level unlocked, only change based on affordability
@@ -129,9 +130,20 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
     currentLevel.name,
     biomass,
     buyMultiplier,
-    gameState,
-    tutorialState,
+    tutorialState?.isActive,
+    tutorialState?.completedSteps,
   ]);
+
+  // Memoize affordability calculations to prevent unnecessary re-renders
+  const generatorAffordability = useMemo(() => {
+    const affordability = new Map();
+    sortedGenerators.forEach((generator) => {
+      const totalCost = calculateTotalCost(generator, buyMultiplier);
+      const canAfford = biomass >= totalCost;
+      affordability.set(generator.id, { totalCost, canAfford });
+    });
+    return affordability;
+  }, [sortedGenerators, biomass, buyMultiplier]);
 
   return (
     <>
@@ -151,8 +163,9 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
         Generators
       </h3>
       {sortedGenerators.map((generator, index) => {
-        const totalCost = calculateTotalCost(generator, buyMultiplier);
-        const canAfford = biomass >= totalCost;
+        const affordability = generatorAffordability.get(generator.id);
+        const totalCost = affordability?.totalCost ?? 0;
+        const canAfford = affordability?.canAfford ?? false;
 
         // Tutorial generator is considered "purchased" after 1 level
         const isTutorialPurchased =
@@ -174,7 +187,7 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
 
         return (
           <div
-            key={generator.id}
+            key={`${generator.id}-${canAfford ? 'affordable' : 'unaffordable'}`}
             className="generator-card"
             style={{
               background: isTutorialPurchased

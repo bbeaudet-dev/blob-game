@@ -63,6 +63,25 @@ export const ShopUpgrades: React.FC<UpgradesProps> = ({
     return levelIndex <= currentLevelIndex;
   };
 
+  // Get upgrade icon based on target level
+  const getUpgradeIcon = (upgrade: any) => {
+    if (!upgrade.targetLevel) return "⚡";
+    
+    const levelIcons: Record<string, string> = {
+      'microscopic': '🦠',
+      'petri-dish': '🧪',
+      'lab': '⚗️',
+      'neighborhood': '🌳',
+      'city': '👱🏼',
+      'continent': '🚓',
+      'earth': '🚢',
+      'solar-system': '🚀',
+      'galaxy': '🛸'
+    };
+    
+    return levelIcons[upgrade.targetLevel] || "⚡";
+  };
+
   return (
     <>
       <h3
@@ -385,6 +404,22 @@ export const ShopUpgrades: React.FC<UpgradesProps> = ({
                     ✓
                   </span>
                 )}
+                
+                {/* Upgrade Icon */}
+                <div
+                  style={{
+                    fontSize: "16px",
+                    marginBottom: "4px",
+                    textAlign: "center",
+                  }}
+                >
+                  {getUpgradeIcon(upgrade)}
+                </div>
+                
+                {/* Upgrade Name */}
+                <div style={{ fontSize: "9px", lineHeight: "1.1" }}>
+                  {upgrade.name}
+                </div>
               </div>
               
 
