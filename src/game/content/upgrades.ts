@@ -1,6 +1,17 @@
 import type { UpgradeState } from '../types';
 
 export const UPGRADES: Record<string, Omit<UpgradeState, 'purchased'>> = {
+  // Tutorial Upgrade (always available)
+  'tutorial-upgrade': {
+    id: 'tutorial-upgrade',
+    name: '🎓 Tutorial Upgrade',
+    description: 'Doubles your click power',
+    cost: 0,
+    effect: 2,
+    type: 'click',
+    unlockedAtLevel: 'intro'
+  },
+
   // Microscopic Level
   'enhanced-microscope-optics': {
     id: 'enhanced-microscope-optics',

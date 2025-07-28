@@ -311,7 +311,23 @@ export const ParticleSpawner: React.FC<ParticleSpawnerProps> = ({
     if (!currentLevel) return;
 
     const spawnInterval = setInterval(() => {
-      const shouldSpawn = Math.random() < (particleConfig.spawnRate * 0.4) / 60; // 60fps, reduced to 40% of original
+      // PERFORMANCE OPTIMIZATION: Apply particle density setting to spawn rate
+      // This prevents excessive particle spawning when cheat mode is enabled with millions of generators
+      // The high biomass from cheat generators would otherwise cause extremely high spawn rates
+      let densityMultiplier = 1.0;
+      switch (particleDensity) {
+        case "low":
+          densityMultiplier = 0.3;
+          break;
+        case "medium":
+          densityMultiplier = 1.0;
+          break;
+        case "high":
+          densityMultiplier = 2.0;
+          break;
+      }
+
+      const shouldSpawn = Math.random() < (particleConfig.spawnRate * 0.4 * densityMultiplier) / 60; // 60fps, reduced to 40% of original
 
       if (shouldSpawn) {
         const newParticle = spawnOffScreenParticle(
@@ -323,7 +339,7 @@ export const ParticleSpawner: React.FC<ParticleSpawnerProps> = ({
     }, 16); // 60fps
 
     return () => clearInterval(spawnInterval);
-  }, [particleConfig, blobPosition, currentLevel]);
+  }, [particleConfig, blobPosition, currentLevel, particleDensity]);
 
   // Combined animation loop for particles and bursts (Performance optimization)
   useEffect(() => {

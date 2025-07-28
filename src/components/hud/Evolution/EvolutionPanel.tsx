@@ -43,6 +43,10 @@ interface EvolutionPanelProps {
   // Blob effects
   clickSensitivity?: "low" | "normal" | "high";
   onClickSensitivityChange?: (value: "low" | "normal" | "high") => void;
+  
+  // Cheat mode
+  cheatMode?: boolean;
+  onCheatModeChange?: (value: boolean) => void;
 }
 
 export const EvolutionPanel: React.FC<EvolutionPanelProps> = ({
@@ -71,6 +75,9 @@ export const EvolutionPanel: React.FC<EvolutionPanelProps> = ({
   musicVolume = 0.35,
   onMusicVolumeChange,
   
+  // Cheat mode
+  cheatMode,
+  onCheatModeChange,
 
 }) => {
   if (!gameState) return null;
@@ -151,6 +158,7 @@ export const EvolutionPanel: React.FC<EvolutionPanelProps> = ({
         onEvolve={onEvolve}
         currentLevelId={currentLevel.id}
         isGameCompleted={gameState.isGameCompleted}
+        gameMode={gameState.gameMode}
       />
 
       {/* Spacer to push customization to bottom */}
@@ -197,7 +205,9 @@ export const EvolutionPanel: React.FC<EvolutionPanelProps> = ({
           musicVolume={musicVolume}
           onMusicVolumeChange={onMusicVolumeChange || (() => {})}
           
-
+          // Cheat mode
+          cheatMode={cheatMode || false}
+          onCheatModeChange={onCheatModeChange || (() => {})}
         />
       </div>
     </div>

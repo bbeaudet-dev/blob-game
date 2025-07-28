@@ -8,6 +8,7 @@ export const GENERATORS: Record<string, Omit<GeneratorState, 'level'>> = {
     baseCost: 10,
     description: 'Clones basic slime cells',
     growthPerTick: 2,
+    // growthPerTick: 2000000000000000,
     costMultiplier: 1.08, // Reduced from 1.20 to prevent fast scaling
     unlockedAtLevel: 'microscopic'
   },
@@ -161,5 +162,16 @@ export const GENERATORS: Record<string, Omit<GeneratorState, 'level'>> = {
     growthPerTick: 1,
     costMultiplier: 1.0,
     unlockedAtLevel: 'intro'
+  },
+
+  // Cheat Generator (only available in cheat mode)
+  'cheat-generator': {
+    id: 'cheat-generator',
+    name: '💎 Cheat Code',
+    baseCost: 1,
+    description: 'Produces unfair amounts of biomass instantly',
+    growthPerTick: 100000000000000000000, // 100 quintillion per second
+    costMultiplier: 1.0,
+    unlockedAtLevel: 'intro' // Available from the start when cheat mode is on
   }
 }; 

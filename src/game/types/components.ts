@@ -55,7 +55,9 @@ export interface GameHUDProps {
   musicVolume?: number;
   onMusicVolumeChange?: (value: number) => void;
   
-
+  // Cheat mode
+  cheatMode?: boolean;
+  onCheatModeChange?: (value: boolean) => void;
 }
 
 export interface GameStatsProps {

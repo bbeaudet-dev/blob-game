@@ -46,10 +46,10 @@ function App() {
 
   // Check for game completion
   useEffect(() => {
-    if (gameHook.gameState.isGameCompleted && !showCompletion) {
+    if (gameHook.gameState.isGameCompleted && !gameHook.gameState.hasShownEndingVideo && !showCompletion) {
       setShowCompletion(true);
     }
-  }, [gameHook.gameState.isGameCompleted, showCompletion]);
+  }, [gameHook.gameState.isGameCompleted, gameHook.gameState.hasShownEndingVideo, showCompletion]);
 
   const handleIntroTransition = () => {
     // Placeholder for any transition logic
@@ -61,6 +61,8 @@ function App() {
 
   const handleCompletionComplete = () => {
     setShowCompletion(false);
+    // Transition to endless mode after video is closed
+    gameHook.handleTransitionToEndless();
   };
 
   return (
@@ -81,6 +83,8 @@ function App() {
       <GameCompletion
         isVisible={showCompletion}
         onComplete={handleCompletionComplete}
+        gameMode={gameHook.gameState.gameMode}
+        onMarkVideoShown={gameHook.handleMarkVideoShown}
       />
     </div>
   );
@@ -115,7 +119,6 @@ function GameComponent({
   // Audio settings state
   const [soundEffectsVolume, setSoundEffectsVolume] = useState(0.3);
   const [musicVolume, setMusicVolume] = useState(0.7); // Increased from 0.35 to 0.7 (70%)
-  
 
   
 
@@ -191,7 +194,9 @@ function GameComponent({
           setBackgroundMusicVolume(volume);
         }}
         
-        
+        // Cheat mode
+        cheatMode={gameState.cheatMode}
+        onCheatModeChange={gameHook.handleToggleCheatMode}
       />
 
       {/* Toast Notifications - Aligned with blob horizontally */}

@@ -30,6 +30,8 @@ export const loadGameState = (): GameState | null => {
       // Reconstruct Set objects that were serialized as arrays
       const reconstructedState = {
         ...parsed,
+        hasShownEndingVideo: parsed.hasShownEndingVideo ?? false, // Default to false for backward compatibility
+        cheatMode: parsed.cheatMode ?? false, // Default to false for backward compatibility
         notifications: {
           ...parsed.notifications,
           shownMilestones: new Set(parsed.notifications?.shownMilestones || []),

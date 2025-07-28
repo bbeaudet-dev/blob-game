@@ -58,7 +58,9 @@ export const GeneratorVisualization: React.FC<GeneratorVisualizationProps> = ({
     const emojis: GeneratorEmoji[] = [];
 
     // Get active generators (with levels > 0), excluding tutorial generator
-    const activeGenerators = Object.values(gameState.generators).filter(gen => gen.level > 0 && gen.id !== 'tutorial-generator');
+    const activeGenerators = Object.values(gameState.generators).filter(gen => 
+      gen.level > 0 && gen.id !== 'tutorial-generator' && gen.id !== 'cheat-generator'
+    );
 
     if (activeGenerators.length === 0) return emojis;
 

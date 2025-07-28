@@ -36,7 +36,9 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   musicVolume = 0.35,
   onMusicVolumeChange,
   
-
+  // Cheat mode
+  cheatMode = false,
+  onCheatModeChange,
 }) => {
   const blobPosition = calculateBlobPosition();
   const shopWidth = 350;
@@ -79,6 +81,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           tutorialState={tutorialState}
           onBuyGenerator={onBuyGenerator}
           onBuyUpgrade={onBuyUpgrade}
+          cheatMode={cheatMode}
         />
       </div>
 
@@ -110,6 +113,9 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           musicVolume={musicVolume}
           onMusicVolumeChange={onMusicVolumeChange}
           
+          // Cheat mode
+          cheatMode={cheatMode}
+          onCheatModeChange={onCheatModeChange}
 
         />
       )}
