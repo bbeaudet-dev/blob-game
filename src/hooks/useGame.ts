@@ -4,6 +4,7 @@ import {
   tick,
   manualClick,
   buyGenerator,
+  buyGeneratorsBulk,
   buyUpgrade,
   evolveToNextLevel,
   type GameState
@@ -98,8 +99,12 @@ export const useGame = () => {
     setTutorialState((prevTutorialState: TutorialState) => progressTutorial(prevTutorialState, 'manualClick'));
   }, [gameState]);
 
-  const handleBuyGenerator = useCallback((generatorId: string) => {
-    setGameState(prevState => buyGenerator(prevState, generatorId));
+  const handleBuyGenerator = useCallback((generatorId: string, count: number = 1) => {
+    if (count === 1) {
+      setGameState(prevState => buyGenerator(prevState, generatorId));
+    } else {
+      setGameState(prevState => buyGeneratorsBulk(prevState, generatorId, count));
+    }
     setTutorialState((prevTutorialState: TutorialState) => progressTutorial(prevTutorialState, 'buyGenerator'));
   }, [gameState]);
 

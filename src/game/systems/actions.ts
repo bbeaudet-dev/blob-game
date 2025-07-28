@@ -29,7 +29,13 @@ export function tick(state: GameState): GameState {
         clickPower,
     };
 
-    return newState;
+    // Check size milestones on every tick (not just on clicks)
+    const sizeResult = checkSizeMilestones(newState);
+    if (sizeResult.notification) {
+        displayNotification(sizeResult.notification.message, sizeResult.notification.id);
+    }
+
+    return sizeResult.state;
 }
 
 // Manual click function
@@ -64,14 +70,16 @@ export function manualClick(state: GameState): GameState {
     return sizeResult.state;
 }
 
-export function buyGenerator(state: GameState, generatorId: string): GameState {
+export function buyGenerator(state: GameState, generatorId: string, playSoundEffect = true): GameState {
     const generator = state.generators[generatorId];
     if (!generator) return state;
 
     // Tutorial generator is always free and purchasable
     if (generatorId === 'tutorial-generator') {
         // Play UI click sound for generator purchase
-        playSound('uiClick');
+        if (playSoundEffect) {
+            playSound('uiClick');
+        }
 
         return {
             ...state,
@@ -89,7 +97,9 @@ export function buyGenerator(state: GameState, generatorId: string): GameState {
 
     if (state.biomass >= cost) {
         // Play UI click sound for generator purchase
-        playSound('uiClick');
+        if (playSoundEffect) {
+            playSound('uiClick');
+        }
 
         const newBiomass = state.biomass - cost;
         const clickPower = calculateClickPower({ ...state, biomass: newBiomass });
@@ -116,6 +126,56 @@ export function buyGenerator(state: GameState, generatorId: string): GameState {
     }
 
     return state;
+}
+
+export function buyGeneratorsBulk(state: GameState, generatorId: string, count: number): GameState {
+    const generator = state.generators[generatorId];
+    if (!generator) return state;
+
+    let currentState = state;
+    let totalCost = 0;
+    let canAfford = true;
+
+    // Calculate total cost first
+    for (let i = 0; i < count; i++) {
+        const level = generator.level + i;
+        const cost = generator.baseCost * Math.pow(generator.costMultiplier, level);
+        totalCost += cost;
+        if (totalCost > currentState.biomass) {
+            canAfford = false;
+            break;
+        }
+    }
+
+    if (!canAfford) {
+        return state; // Can't afford all purchases
+    }
+
+    // Tutorial generator is always free and purchasable
+    if (generatorId === 'tutorial-generator') {
+        // Play UI click sound for tutorial generator purchase
+        playSound('uiClick');
+
+        return {
+            ...state,
+            generators: {
+                ...state.generators,
+                [generatorId]: {
+                    ...generator,
+                    level: generator.level + count
+                }
+            }
+        };
+    }
+
+    // Perform bulk purchase
+    for (let i = 0; i < count; i++) {
+        // Only play sound effect for first purchase and every 5th purchase after that
+        const shouldPlaySound = i === 0 || (i + 1) % 5 === 0;
+        currentState = buyGenerator(currentState, generatorId, shouldPlaySound);
+    }
+
+    return currentState;
 }
 
 export function buyUpgrade(state: GameState, upgradeId: string): GameState {

@@ -15,6 +15,28 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   onBuyUpgrade,
   onEvolve,
   onTutorialStepComplete,
+  
+  // Generator visualization
+  outerRingsFaster = true,
+  onOuterRingsFasterChange,
+  equalNumbers = true,
+  onEqualNumbersChange,
+  
+  // Particle settings
+  particleDensity = "medium",
+  onParticleDensityChange,
+  particleSpeed = "normal",
+  onParticleSpeedChange,
+  particleSize = "normal",
+  onParticleSizeChange,
+  
+  // Audio settings
+  soundEffectsVolume = 0.3,
+  onSoundEffectsVolumeChange,
+  musicVolume = 0.35,
+  onMusicVolumeChange,
+  
+
 }) => {
   const blobPosition = calculateBlobPosition();
   const shopWidth = 350;
@@ -67,6 +89,28 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           gameState={gameState}
           onEvolve={onEvolve}
           width={evolutionWidth}
+          
+          // Generator visualization
+          outerRingsFaster={outerRingsFaster}
+          onOuterRingsFasterChange={onOuterRingsFasterChange}
+          equalNumbers={equalNumbers}
+          onEqualNumbersChange={onEqualNumbersChange}
+          
+          // Particle settings
+          particleDensity={particleDensity}
+          onParticleDensityChange={onParticleDensityChange}
+          particleSpeed={particleSpeed}
+          onParticleSpeedChange={onParticleSpeedChange}
+          particleSize={particleSize}
+          onParticleSizeChange={onParticleSizeChange}
+          
+          // Audio settings
+          soundEffectsVolume={soundEffectsVolume}
+          onSoundEffectsVolumeChange={onSoundEffectsVolumeChange}
+          musicVolume={musicVolume}
+          onMusicVolumeChange={onMusicVolumeChange}
+          
+
         />
       )}
 

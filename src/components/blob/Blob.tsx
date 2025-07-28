@@ -29,6 +29,8 @@ const Blob = React.memo(
     clickPower = 1, // Default click power
     addFloatingNumber,
     onAnimationStateChange,
+    
+
   }: BlobProps) => {
     const filterId = `glow-${id}`;
 
@@ -197,6 +199,7 @@ const Blob = React.memo(
         if (isDisabled) {
           scaleVariation *= 0.9;
         }
+        
         setScale(scaleVariation);
 
         // Re-render if enough time has passed
@@ -223,7 +226,7 @@ const Blob = React.memo(
 
     // Calculate tighter bounds for the clickable area
     const blobRadius = currentVisualSize * 0.35;
-    const containerSize = blobRadius * 2.4; // Clickable area size
+    const containerSize = blobRadius * 2.4; // Standard clickable area size
 
     return (
       <div
