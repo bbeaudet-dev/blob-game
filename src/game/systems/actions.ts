@@ -6,7 +6,6 @@ import { playSound } from '../../utils/sound';
 import {
     checkSizeMilestones,
     checkFirstGenerator,
-    checkFirstUpgrade,
     checkClickMilestones,
     incrementClickCount,
     displayNotification
@@ -93,6 +92,25 @@ export function buyGenerator(state: GameState, generatorId: string, playSoundEff
         };
     }
 
+    // Cheat generator is free and purchasable when cheat mode is on
+    if (generatorId === 'cheat-generator' && state.cheatMode) {
+        // Play UI click sound for generator purchase
+        if (playSoundEffect) {
+            playSound('uiClick');
+        }
+
+        return {
+            ...state,
+            generators: {
+                ...state.generators,
+                [generatorId]: {
+                    ...generator,
+                    level: generator.level + 1
+                }
+            }
+        };
+    }
+
     const cost = generator.baseCost * Math.pow(generator.costMultiplier, generator.level);
 
     if (state.biomass >= cost) {
@@ -128,54 +146,57 @@ export function buyGenerator(state: GameState, generatorId: string, playSoundEff
     return state;
 }
 
-export function buyGeneratorsBulk(state: GameState, generatorId: string, count: number): GameState {
+export function buyGeneratorsBulk(state: GameState, generatorId: string, count: number | 'double'): GameState {
     const generator = state.generators[generatorId];
     if (!generator) return state;
 
-    let currentState = state;
-    let totalCost = 0;
-    let canAfford = true;
-
-    // Calculate total cost first
-    for (let i = 0; i < count; i++) {
-        const level = generator.level + i;
-        const cost = generator.baseCost * Math.pow(generator.costMultiplier, level);
-        totalCost += cost;
-        if (totalCost > currentState.biomass) {
-            canAfford = false;
-            break;
-        }
+    // Calculate how many to buy
+    let amountToBuy: number;
+    if (count === 'double') {
+        const currentLevel = generator.level;
+        const targetLevel = currentLevel * 2;
+        amountToBuy = targetLevel - currentLevel;
+        if (amountToBuy <= 0) return state; // Already at or above double level
+    } else {
+        amountToBuy = count;
     }
 
-    if (!canAfford) {
-        return state; // Can't afford all purchases
-    }
+    // Calculate total cost
+    const totalCost = calculateTotalCost(generator, count);
+    
+    if (state.biomass < totalCost) return state;
 
-    // Tutorial generator is always free and purchasable
-    if (generatorId === 'tutorial-generator') {
-        // Play UI click sound for tutorial generator purchase
-        playSound('uiClick');
+    // PERFORMANCE OPTIMIZATION: Play sound effect ONCE for the entire purchase
+    // This prevents sound effect spam when buying millions of generators
+    // The sound is played before the purchase logic to ensure it always plays exactly once
+    playSound('uiClick');
 
+    // Special handling for cheat generator (always free when cheat mode is on)
+    if (generatorId === 'cheat-generator' && state.cheatMode) {
         return {
             ...state,
             generators: {
                 ...state.generators,
                 [generatorId]: {
                     ...generator,
-                    level: generator.level + count
+                    level: generator.level + amountToBuy
                 }
             }
         };
     }
 
-    // Perform bulk purchase
-    for (let i = 0; i < count; i++) {
-        // Only play sound effect for first purchase and every 5th purchase after that
-        const shouldPlaySound = i === 0 || (i + 1) % 5 === 0;
-        currentState = buyGenerator(currentState, generatorId, shouldPlaySound);
-    }
-
-    return currentState;
+    // Regular purchase
+    return {
+        ...state,
+        biomass: state.biomass - totalCost,
+        generators: {
+            ...state.generators,
+            [generatorId]: {
+                ...generator,
+                level: generator.level + amountToBuy
+            }
+        }
+    };
 }
 
 export function buyUpgrade(state: GameState, upgradeId: string): GameState {
@@ -184,32 +205,25 @@ export function buyUpgrade(state: GameState, upgradeId: string): GameState {
 
     // Tutorial upgrade is always free and purchasable
     if (upgradeId === 'tutorial-upgrade') {
-        if (!upgrade.purchased) {
-            // Play UI click sound for upgrade purchase
-            playSound('uiClick');
-
-            return {
-                ...state,
-                upgrades: {
-                    ...state.upgrades,
-                    [upgradeId]: {
-                        ...upgrade,
-                        purchased: true
-                    }
+        playSound('uiClick');
+        return {
+            ...state,
+            upgrades: {
+                ...state.upgrades,
+                [upgradeId]: {
+                    ...upgrade,
+                    purchased: true
                 }
-            };
-        }
-        return state;
+            }
+        };
     }
 
-    if (!upgrade.purchased && state.biomass >= upgrade.cost) {
-        // Play UI click sound for upgrade purchase
+    if (state.biomass >= upgrade.cost && !upgrade.purchased) {
         playSound('uiClick');
-
         const newBiomass = state.biomass - upgrade.cost;
         const clickPower = calculateClickPower({ ...state, biomass: newBiomass });
 
-        const updatedState = {
+        return {
             ...state,
             biomass: newBiomass,
             clickPower,
@@ -221,13 +235,6 @@ export function buyUpgrade(state: GameState, upgradeId: string): GameState {
                 }
             }
         };
-
-        const result = checkFirstUpgrade(updatedState);
-        if (result.notification) {
-            displayNotification(result.notification.message, result.notification.id);
-        }
-
-        return result.state;
     }
 
     return state;
@@ -267,9 +274,41 @@ export function evolveToNextLevel(state: GameState): GameState {
         ...state,
         currentLevelId: nextLevel.id,
         highestLevelReached: nextLevel.id,
-        isGameCompleted: isFinalLevel ? true : state.isGameCompleted
+        isGameCompleted: isFinalLevel ? true : state.isGameCompleted,
+        hasShownEndingVideo: isFinalLevel ? false : state.hasShownEndingVideo
         // Biomass carries over, generators and upgrades are preserved
         // Zoom reset is handled by useCameraZoom hook when currentLevelId changes
+    };
+}
+
+// Transition to endless mode after game completion
+export function transitionToEndlessMode(state: GameState): GameState {
+    return {
+        ...state,
+        gameMode: 'endless',
+        hasShownEndingVideo: true,
+        // Keep isGameCompleted as true since the game is still completed
+        // Keep all other state (biomass, generators, upgrades, etc.)
+    };
+}
+
+// Toggle cheat mode
+export function toggleCheatMode(state: GameState): GameState {
+    const newCheatMode = !state.cheatMode;
+    
+    // If turning cheat mode off, "sell" all cheat generators (reset to 0)
+    const updatedGenerators = { ...state.generators };
+    if (!newCheatMode && state.generators['cheat-generator']) {
+        updatedGenerators['cheat-generator'] = {
+            ...state.generators['cheat-generator'],
+            level: 0
+        };
+    }
+    
+    return {
+        ...state,
+        cheatMode: newCheatMode,
+        generators: updatedGenerators,
     };
 }
 
@@ -297,7 +336,23 @@ export function isContentAvailable(unlockedAtLevel: string, currentLevelName: st
 }
 
 // Calculate total cost for buying multiple generators (from incoming branch)
-export function calculateTotalCost(generator: { baseCost: number; costMultiplier: number; level: number }, count: number): number {
+export function calculateTotalCost(generator: { baseCost: number; costMultiplier: number; level: number }, count: number | 'double'): number {
+    if (count === 'double') {
+        // For double mode, calculate cost to double the current level
+        const currentLevel = generator.level;
+        const targetLevel = currentLevel * 2;
+        const amountToBuy = targetLevel - currentLevel;
+        
+        let totalCost = 0;
+        for (let i = 0; i < amountToBuy; i++) {
+            const levelToBuy = currentLevel + i;
+            const cost = generator.baseCost * Math.pow(generator.costMultiplier, levelToBuy);
+            totalCost += cost;
+        }
+        return totalCost;
+    }
+    
+    // Regular count calculation
     let totalCost = 0;
     for (let i = 0; i < count; i++) {
         const currentLevel = generator.level + i;

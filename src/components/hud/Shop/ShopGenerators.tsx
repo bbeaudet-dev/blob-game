@@ -26,7 +26,8 @@ interface GeneratorsProps {
   generatorFilter: "current" | "all";
   sortOption: "price" | "value" | "level";
   currentLevel: { name: string };
-  buyMultiplier: 1 | 10 | 50;
+  buyMultiplier: 1 | 10 | 50 | 'double';
+  cheatMode?: boolean;
 }
 
 export const ShopGenerators: React.FC<GeneratorsProps> = ({
@@ -67,6 +68,11 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
         // Always show tutorial generator during tutorial
         if (generator.id === "tutorial-generator") {
           return tutorialState?.isActive;
+        }
+
+        // Show cheat generator only when cheat mode is enabled
+        if (generator.id === "cheat-generator") {
+          return gameState.cheatMode;
         }
 
         if (generatorFilter === "current") {
@@ -132,6 +138,7 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
     buyMultiplier,
     tutorialState?.isActive,
     tutorialState?.completedSteps,
+    gameState.cheatMode,
   ]);
 
   // Memoize affordability calculations to prevent unnecessary re-renders
@@ -185,6 +192,12 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
               (g) => biomass >= calculateTotalCost(g, buyMultiplier)
             );
 
+        // Check if this is the top value generator (when sort is by value)
+        const isTopValueGenerator = 
+          sortOption === "value" && 
+          index === 0 && 
+          canAfford;
+
         return (
           <div
             key={`${generator.id}-${canAfford ? 'affordable' : 'unaffordable'}`}
@@ -194,14 +207,34 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
                 ? `${Colors.generators.light}30` // light generator color for purchased tutorial generator
                 : generator.id === "tutorial-generator" && !isTutorialEnabled
                 ? "rgba(128, 128, 128, 0.3)" // gray for disabled tutorial generator
+                : generator.id === "cheat-generator" && gameState.cheatMode
+                ? "linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #dda0dd, #98d8c8, #f7dc6f)" // animated diamond gradient
+                : isTopValueGenerator
+                ? "linear-gradient(45deg, rgba(255, 180, 0, 0.5), rgba(255, 200, 78, 0.4), rgba(255, 200, 0, 0.5), rgba(218, 140, 32, 0.6), rgba(255, 180, 0, 0.5), rgba(255, 200, 78, 0.4))" // animated gold gradient with red tint and more transparency
                 : canAfford
                 ? `${Colors.generators.primary}30`
                 : "rgba(255, 255, 255, 0.05)",
+              backgroundSize: generator.id === "cheat-generator" && gameState.cheatMode 
+                ? "400% 400%" 
+                : isTopValueGenerator 
+                ? "400% 400%" 
+                : "auto",
+              animation: generator.id === "cheat-generator" && gameState.cheatMode 
+                ? "diamondShine 3s ease-in-out infinite" 
+                : isTopValueGenerator
+                ? "goldShine 2s ease-in-out infinite"
+                : isFirstAffordable
+                ? "generatorPulse 2s ease-in-out infinite"
+                : "none",
               border: `2px solid ${
                 isTutorialPurchased
                   ? Colors.generators.light // light generator border for purchased tutorial generator
                   : generator.id === "tutorial-generator" && !isTutorialEnabled
                   ? "#666" // gray border for disabled tutorial generator
+                  : generator.id === "cheat-generator" && gameState.cheatMode
+                  ? "transparent" // transparent border for cheat generator (gradient applied via CSS)
+                  : isTopValueGenerator
+                  ? "transparent" // transparent border for top value generator
                   : canAfford
                   ? Colors.generators.primary
                   : "#666"
@@ -219,6 +252,12 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
               position: "relative",
               transition: "all 0.3s ease-in-out",
               transform: "scale(1)",
+              color: generator.id === "cheat-generator" && gameState.cheatMode 
+                ? "#000" 
+                : "#fff", // Keep white text for all generators except cheat generator
+              fontWeight: (generator.id === "cheat-generator" && gameState.cheatMode) || isTopValueGenerator 
+                ? "bold" 
+                : "normal", // Bold text for special generators
               boxShadow: isTutorialPurchased
                 ? `0 2px 8px ${Colors.generators.light}40` // light generator shadow for purchased tutorial generator
                 : generator.id === "tutorial-generator" && !isTutorialEnabled
@@ -226,11 +265,12 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
                 : generator.id === "tutorial-generator" &&
                   tutorialState?.currentStep?.type === "click-blob"
                 ? "none" // no shadow during click-blob phase
+                : generator.id === "cheat-generator" && gameState.cheatMode
+                ? "0 0 20px rgba(255, 107, 107, 0.6), 0 0 40px rgba(78, 205, 196, 0.4), 0 0 60px rgba(69, 183, 209, 0.2)" // diamond glow effect
+                : isTopValueGenerator
+                ? "0 0 15px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.4), 0 0 45px rgba(255, 215, 0, 0.2)" // gold glow effect
                 : canAfford
                 ? `0 2px 8px ${Colors.generators.primary}40`
-                : "none",
-              animation: isFirstAffordable
-                ? "generatorPulse 2s ease-in-out infinite"
                 : "none",
             }}
             onClick={(e) => {
@@ -240,7 +280,7 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
                 (generator.id !== "tutorial-generator" || isTutorialEnabled)
               ) {
                 // Calculate growth increase before purchase
-                const growthIncrease = generator.growthPerTick * buyMultiplier; // This is per tick
+                const growthIncrease = generator.growthPerTick * (buyMultiplier === 'double' ? generator.level : buyMultiplier); // This is per tick
                 const growthPerSecond =
                   growthIncrease * (1000 / GAME_CONFIG.tickRate); // Convert to per-second
 
@@ -505,6 +545,30 @@ export const ShopGenerators: React.FC<GeneratorsProps> = ({
           100% {
             box-shadow: 0 2px 8px ${Colors.generators.primary}40;
             transform: scale(1);
+          }
+        }
+
+        @keyframes diamondShine {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+
+        @keyframes goldShine {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
           }
         }
       `}</style>

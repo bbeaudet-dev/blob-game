@@ -60,6 +60,8 @@ export const INITIAL_STATE: GameState = {
     highestLevelReached: 0,
     gameMode: 'tutorial',
     isGameCompleted: false,
+    hasShownEndingVideo: false,
+    cheatMode: false,
     notifications: {
         shownMilestones: new Set<string>(),
         totalClicks: 0,

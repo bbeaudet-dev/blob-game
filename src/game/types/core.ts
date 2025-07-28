@@ -15,6 +15,8 @@ export interface GameState {
   highestLevelReached: number
   gameMode: 'tutorial' | 'main' | 'endless'
   isGameCompleted: boolean
+  hasShownEndingVideo: boolean
+  cheatMode: boolean
   notifications: {
     shownMilestones: Set<string>
     totalClicks: number

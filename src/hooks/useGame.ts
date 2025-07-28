@@ -7,6 +7,8 @@ import {
   buyGeneratorsBulk,
   buyUpgrade,
   evolveToNextLevel,
+  transitionToEndlessMode,
+  toggleCheatMode,
   type GameState
 } from '../game/systems/actions';
 import { GAME_CONFIG } from '../game/content/config';
@@ -56,7 +58,10 @@ export const useGame = () => {
     // Only switch themes when tutorial is NOT active
     const currentLevelId = gameState.currentLevelId;
     
-    if (currentLevelId >= 1 && currentLevelId <= 4) {
+    if (gameState.gameMode === 'endless') {
+      // Keep final theme in endless mode
+      switchMusicTheme('finalTheme', 0.24);
+    } else if (currentLevelId >= 1 && currentLevelId <= 4) {
       // Microscopic, Petri Dish, Lab, Neighborhood
       switchMusicTheme('earlyTheme', 0.24);
     } else if (currentLevelId >= 5 && currentLevelId <= 7) {
@@ -66,7 +71,7 @@ export const useGame = () => {
       // Solar System and beyond
       switchMusicTheme('finalTheme', 0.24);
     }
-  }, [gameState.currentLevelId, tutorialState.isActive]);
+  }, [gameState.currentLevelId, gameState.gameMode, tutorialState.isActive]);
 
   // Game loop
   useEffect(() => {
@@ -124,6 +129,21 @@ export const useGame = () => {
     setTutorialState((prevTutorialState: TutorialState) => progressTutorial(prevTutorialState, 'evolve'));
   }, [gameState]);
 
+  const handleTransitionToEndless = useCallback(() => {
+    setGameState(prevState => transitionToEndlessMode(prevState));
+  }, []);
+
+  const handleMarkVideoShown = useCallback(() => {
+    setGameState(prevState => ({
+      ...prevState,
+      hasShownEndingVideo: true
+    }));
+  }, []);
+
+  const handleToggleCheatMode = useCallback(() => {
+    setGameState(prevState => toggleCheatMode(prevState));
+  }, []);
+
   const handleTutorialStepComplete = useCallback((stepId: string) => {
     setTutorialState((prevTutorialState: TutorialState) => {
       const newTutorialState = { ...prevTutorialState };
@@ -175,6 +195,9 @@ export const useGame = () => {
     handleBuyGenerator,
     handleBuyUpgrade,
     handleEvolve,
+    handleTransitionToEndless,
+    handleMarkVideoShown,
+    handleToggleCheatMode,
     handleTutorialStepComplete,
   };
 }; 

@@ -4,9 +4,16 @@ import { pauseBackgroundMusic, playBackgroundMusic } from '../utils/sound';
 interface GameCompletionProps {
   isVisible: boolean;
   onComplete: () => void;
+  gameMode?: 'tutorial' | 'main' | 'endless';
+  onMarkVideoShown?: () => void;
 }
 
-export const GameCompletion: React.FC<GameCompletionProps> = ({ isVisible, onComplete }) => {
+export const GameCompletion: React.FC<GameCompletionProps> = ({ 
+  isVisible, 
+  onComplete, 
+  gameMode = 'main',
+  onMarkVideoShown
+}) => {
   const [showVideo, setShowVideo] = useState(false);
   const [hasClosed, setHasClosed] = useState(false);
 
@@ -35,9 +42,21 @@ export const GameCompletion: React.FC<GameCompletionProps> = ({ isVisible, onCom
     
     setHasClosed(true);
     setShowVideo(false);
+    
+    // Mark the video as shown so it doesn't reopen
+    onMarkVideoShown?.();
+    
     onComplete();
     // Resume background music when video ends
     playBackgroundMusic(0.24);
+  };
+
+  const handleRewatchEnding = () => {
+    // Reset the closed state and show video again
+    setHasClosed(false);
+    setShowVideo(true);
+    pauseBackgroundMusic();
+    // Note: We don't call onMarkVideoShown here because this is a rewatch
   };
 
   const handleKeyPress = (event: KeyboardEvent) => {
@@ -142,6 +161,43 @@ export const GameCompletion: React.FC<GameCompletionProps> = ({ isVisible, onCom
             ✕
           </button>
         </div>
+      )}
+
+      {/* Rewatch Ending Button - Only show in endless mode when video is not playing */}
+      {gameMode === 'endless' && !showVideo && (
+        <button
+          onClick={handleRewatchEnding}
+          style={{
+            position: 'absolute',
+            bottom: '20px',
+            right: '20px',
+            zIndex: 2,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            color: 'white',
+            border: '2px solid white',
+            borderRadius: '8px',
+            padding: '10px 15px',
+            fontSize: '14px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontFamily: 'Arial, sans-serif',
+            pointerEvents: 'auto',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+            e.currentTarget.style.transform = 'scale(1.05)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            e.currentTarget.style.transform = 'scale(1)';
+          }}
+          title="Rewatch the ending video"
+        >
+          🎬 Rewatch Ending
+        </button>
       )}
 
       <style>{`

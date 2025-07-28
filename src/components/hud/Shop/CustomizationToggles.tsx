@@ -22,7 +22,9 @@ interface CustomizationTogglesProps {
   musicVolume: number;
   onMusicVolumeChange: (value: number) => void;
   
-
+  // Cheat mode
+  cheatMode: boolean;
+  onCheatModeChange: (value: boolean) => void;
 }
 
 export const CustomizationToggles: React.FC<CustomizationTogglesProps> = ({
@@ -46,6 +48,9 @@ export const CustomizationToggles: React.FC<CustomizationTogglesProps> = ({
   musicVolume,
   onMusicVolumeChange,
   
+  // Cheat mode
+  cheatMode,
+  onCheatModeChange,
 
 }) => {
   const toggleButtonStyle = {
@@ -264,6 +269,31 @@ export const CustomizationToggles: React.FC<CustomizationTogglesProps> = ({
               </button>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Cheat Mode */}
+      <div style={sectionStyle}>
+        <div style={sectionTitleStyle}>⚠️ DANGER ZONE ⚠️</div>
+        
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <button
+            onClick={() => onCheatModeChange(!cheatMode)}
+            style={{
+              padding: "6px 12px",
+              fontSize: "12px",
+              backgroundColor: cheatMode ? "#ff4444" : "transparent",
+              color: cheatMode ? "#fff" : "#ff4444",
+              border: "2px solid #ff4444",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontWeight: cheatMode ? "bold" : "normal",
+              transition: "all 0.2s ease",
+            }}
+            title="Toggle cheat mode to unlock a powerful generator"
+          >
+            {cheatMode ? "💎 CHEATS ON" : "CHEATS OFF"}
+          </button>
         </div>
       </div>
     </div>

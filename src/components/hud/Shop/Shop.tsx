@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import type { GameState } from "../../../game/types";
 import type { TutorialState } from "../../../game/types/ui";
 import { getCurrentLevel } from "../../../game/systems/actions";
@@ -17,6 +17,7 @@ interface ShopProps {
   tutorialState?: TutorialState;
   onBuyGenerator?: (generatorId: string, count?: number) => void;
   onBuyUpgrade?: (upgradeId: string) => void;
+  cheatMode?: boolean;
 }
 
 export const Shop: React.FC<ShopProps> = ({
@@ -25,12 +26,20 @@ export const Shop: React.FC<ShopProps> = ({
   tutorialState,
   onBuyGenerator,
   onBuyUpgrade,
+  cheatMode = false,
 }) => {
   const [generatorFilter, setGeneratorFilter] = useState<"current" | "all">(
     "all"
   );
-  const [buyMultiplier, setBuyMultiplier] = useState<1 | 10 | 50>(1);
+  const [buyMultiplier, setBuyMultiplier] = useState<1 | 10 | 50 | 'double'>(1);
   const [sortOption, setSortOption] = useState<"price" | "value" | "level">("value");
+
+  // Auto-switch from 'double' mode when cheat mode is turned off
+  useEffect(() => {
+    if (!cheatMode && buyMultiplier === 'double') {
+      setBuyMultiplier(1);
+    }
+  }, [cheatMode, buyMultiplier]);
 
   if (!gameState || !onBuyGenerator || !onBuyUpgrade) {
     return null;
@@ -39,8 +48,18 @@ export const Shop: React.FC<ShopProps> = ({
   const currentLevel = getCurrentLevel(gameState);
 
   const handleBuyGenerator = (generatorId: string) => {
-    // Use bulk purchase function to avoid sound effect spam
-    onBuyGenerator(generatorId, buyMultiplier);
+    if (buyMultiplier === 'double') {
+      // For double mode, buy enough to double the current level
+      const currentLevel = gameState?.generators[generatorId]?.level || 0;
+      const targetLevel = currentLevel * 2;
+      const amountToBuy = targetLevel - currentLevel;
+      if (amountToBuy > 0) {
+        onBuyGenerator(generatorId, amountToBuy);
+      }
+    } else {
+      // Use bulk purchase function to avoid sound effect spam
+      onBuyGenerator(generatorId, buyMultiplier);
+    }
   };
 
   const handleBuyUpgrade = (upgradeId: string) => {
@@ -98,6 +117,7 @@ export const Shop: React.FC<ShopProps> = ({
           <BuyMultiplierToggle
             multiplier={buyMultiplier}
             onMultiplierChange={setBuyMultiplier}
+            cheatMode={cheatMode}
           />
         </div>
 
@@ -134,6 +154,7 @@ export const Shop: React.FC<ShopProps> = ({
           sortOption={sortOption}
           currentLevel={currentLevel}
           buyMultiplier={buyMultiplier}
+          cheatMode={cheatMode}
         />
 
         {/* Upgrades Component */}
